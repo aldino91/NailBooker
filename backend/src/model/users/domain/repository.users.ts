@@ -1,11 +1,13 @@
+import InterfaceReturnFetch from '../interface/interfReturnfetch';
 import { LoginUserDto } from './dtos/auth/dtos.login.user';
 import { RegisterUserDto } from './dtos/auth/dtos.register.user';
-import { Users } from './entity.users';
 
 export abstract class UserRepository {
-	abstract register(registerUserDto: RegisterUserDto): Promise<Users>;
+	abstract register(
+		registerUserDto: RegisterUserDto
+	): Promise<InterfaceReturnFetch>;
 
-	abstract login(loginUserDto: LoginUserDto): Promise<Users>;
+	abstract login(loginUserDto: LoginUserDto): Promise<InterfaceReturnFetch>;
 
 	abstract validateEmail(): Promise<any>;
 }
