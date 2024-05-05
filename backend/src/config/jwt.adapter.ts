@@ -4,7 +4,7 @@ import { envs } from './envs';
 const seed = envs.JWT_SEED;
 
 export class JwtAdapter {
-	static getToken(payload: any, duration: string = '2h') {
+	static generateToken(payload: any, duration: string) {
 		return new Promise((resolve) => {
 			jwt.sign(payload, seed, { expiresIn: duration }, (err, token) => {
 				if (err) {
@@ -15,5 +15,14 @@ export class JwtAdapter {
 		});
 	}
 
-	static validateToken(token: string) {}
+	static validateToken(token: string) {
+		return new Promise((resolve) => {
+			jwt.verify(token, seed, (err, decoded) => {
+				if (err) {
+					return resolve(null);
+				}
+				resolve(decoded);
+			});
+		});
+	}
 }

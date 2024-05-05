@@ -4,7 +4,10 @@ import { RegisterUserDto } from '../../domain/dtos/auth/dtos.register.user';
 import { UserRepository } from '../../domain/repository.users';
 import { LoginUserUseCase } from '../../domain/use-cases/login.use.cases';
 import { RegisterUserUseCase } from '../../domain/use-cases/register.use.cases';
-import { ErrorUserRegisterUseCase } from '../../../../errors/users/user.register.use.case';
+import { ValidateEmailUseCase } from '../../domain/use-cases/validate.email.use.case';
+import path from 'path';
+import { ErrorInternalServer } from '../../../../errors/error.internal.server';
+import { ErrorTokenUser } from '../../../../errors/users/user.token.error';
 
 export class AuthController {
 	constructor(public readonly userRepository: UserRepository) {}
@@ -38,6 +41,40 @@ export class AuthController {
 	};
 
 	validateEmail = (req: Request, res: Response) => {
-		res.json('validateEmailUser');
+		const { token } = req.params;
+
+		new ValidateEmailUseCase(this.userRepository)
+			.execute(token)
+			.then(({ error, data }) => {
+				if (error !== undefined) {
+					res.sendFile(
+						path.join(
+							__dirname,
+							'../../../../../public',
+							'tokenValidatedEmailExpired.html'
+						)
+					);
+				} else {
+					res.sendFile(
+						path.join(
+							__dirname,
+							'../../../../../public',
+							'successValidatedEmail.html'
+						)
+					);
+				}
+			})
+			.catch((error) => {
+				return new ErrorInternalServer('Error validated email!');
+			});
+	};
+
+	resendToken = (req: Request, res: Response) => {
+		const { token } = req.params;
+		new ValidateEmailUseCase(this.userRepository)
+			.execute(token)
+			.catch((error) => {
+				return new ErrorInternalServer('Error validated email!');
+			});
 	};
 }

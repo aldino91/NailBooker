@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import prisma from '../model/users/data/postgres';
+import path from 'path';
 
 export class Server {
 	public readonly app = express();
@@ -20,6 +21,8 @@ export class Server {
 		this.app.use(express.json());
 
 		this.app.use(express.urlencoded({ extended: true }));
+
+		this.app.use(express.static(path.join(__dirname, 'public')));
 
 		this.app.use(this.routes!);
 

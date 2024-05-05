@@ -1,3 +1,5 @@
+import { ErrorTokenUser } from '../../../errors/users/user.token.error';
+import IntReturnLoginUser from '../interface/intReturnLoginUser';
 import InterfaceReturnUserFetch from '../interface/interfReturnfetch';
 import { LoginUserDto } from './dtos/auth/dtos.login.user';
 import { RegisterUserDto } from './dtos/auth/dtos.register.user';
@@ -7,7 +9,9 @@ export abstract class UserDataSources {
 		registerUserDto: RegisterUserDto
 	): Promise<InterfaceReturnUserFetch>;
 
-	abstract login(loginUserDto: LoginUserDto): Promise<InterfaceReturnUserFetch>;
+	abstract login(loginUserDto: LoginUserDto): Promise<IntReturnLoginUser>;
 
-	abstract validateEmail(): Promise<any>;
+	abstract validateEmail(
+		token: string
+	): Promise<{ error?: ErrorTokenUser; data?: string }>;
 }
