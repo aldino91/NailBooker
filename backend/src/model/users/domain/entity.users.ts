@@ -6,9 +6,6 @@ export class Users {
 		public readonly emailValidated: boolean,
 		public readonly password: string,
 		public readonly phoneNumber: string,
-		public readonly role: string,
-		public readonly id: string,
-		public readonly createdAt?: Date,
-		public readonly updatedAt?: Date
+		public readonly role: string
 	) {}
 }

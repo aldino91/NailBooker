@@ -13,8 +13,8 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model users {
-  id String @id
+model Users {
+  id String @id @default(uuid())
 
   name String
 
@@ -30,13 +30,15 @@ model users {
 
   role String
 
-  createdAt DateTime @default(now())
+  bookings Bookings[]
 
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 }
 
-model clients {
-  id Int @id @default(autoincrement())
+model Clients {
+  id String @id @default(uuid())
 
   name String
 
@@ -46,23 +48,31 @@ model clients {
 
   phoneNumber Int
 
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 }
 
-model bookings {
-  id String @id
+model Bookings {
+  id String @id @default(uuid())
 
-  reserverCreator String
+  author String
 
   reservarName String
 
   jobType String[]
 
+  bookingDate String
+
+  bookingTime String
+
   duration Int
 
-  createdAt DateTime @default(now())
+  Users Users? @relation(fields: [usersId], references: [id])
 
-  updatedAt DateTime @updatedAt
+  usersId String?
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 }

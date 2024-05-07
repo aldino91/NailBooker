@@ -6,7 +6,7 @@ import { errorHandler } from './middleware/middleware.errorHandler';
 import EmailService from './EmailService.ts/EmailService';
 import { envs } from '../../../config/envs';
 import { env } from 'process';
-import prisma from '../data/postgres';
+import prisma from '../../../postgres';
 
 export class AuthRoutes {
 	static get routes(): Router {

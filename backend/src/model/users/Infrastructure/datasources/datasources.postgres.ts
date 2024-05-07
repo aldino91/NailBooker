@@ -5,8 +5,7 @@ import { ErrorInternalServer } from '../../../../errors/error.internal.server';
 import { ErrorUserEmailOrPassword } from '../../../../errors/users/user.not.existed.error';
 import { UserNotFoundError } from '../../../../errors/users/user.not.found.error';
 import { ErrorTokenUser } from '../../../../errors/users/user.token.error';
-import prisma from '../../data/postgres';
-import jwt, { VerifyErrors } from 'jsonwebtoken';
+import prisma from '../../../../postgres';
 import { UserDataSources } from '../../domain/datasources.users';
 import { LoginUserDto } from '../../domain/dtos/auth/dtos.login.user';
 import { RegisterUserDto } from '../../domain/dtos/auth/dtos.register.user';
@@ -28,14 +27,7 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 			password,
 			phoneNumber,
 			role,
-			id,
 		} = registerUserDto;
-
-		// await prisma.users.deleteMany();
-
-		// return { error: undefined, user: undefined };
-
-		const idUUv4 = id as string;
 
 		const ExistedUser = await prisma.users.findFirst({
 			where: {
@@ -56,7 +48,6 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 		try {
 			const user = await prisma.users.create({
 				data: {
-					id: idUUv4,
 					name,
 					surname,
 					email,
