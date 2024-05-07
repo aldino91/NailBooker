@@ -88,6 +88,7 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 			{
 				id: user.id,
 				email: user.email,
+				role: user.role,
 			},
 			'2592000'
 		);
