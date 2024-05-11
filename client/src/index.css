@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  font-family: "Kanit", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  /* background-color: #DFDBE5;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); */
+
+  /* color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+}
+
+
+#background-photo {
+  width: 100%;
+
+  /* Altura del contenedor */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('./assets/background-photo.webp');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+
+
+#classic-manicure {
+
+  width: 100%;
+
+  /* Altura del contenedor */
+  background-image: url('./assets/classic-manicure.webp');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+
+#pedicure {
+
+  width: 100%;
+
+  /* Altura del contenedor */
+  background-image: url('./assets/pedicure.jpg');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+#semi-permanente {
+
+  width: 100%;
+
+  /* Altura del contenedor */
+  background-image: url('./assets/semi-permanente.jpg');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+#permanente {
+
+  width: 100%;
+
+  /* Altura del contenedor */
+  background-image: url('./assets/permanente.jpg');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+#manicura-pedicura-francesa {
+
+  width: 100%;
+
+  background-image: url('./assets/manicura-pedicura-francesa.jpg');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+
+#uñas-acrílicas-gel {
+
+  width: 100%;
+
+  background-image: url('./assets/uñas-acrilicas-gel.jpg');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+#remoción-esmalte-postizas {
+
+  width: 100%;
+
+  background-image: url('./assets/remocion-esmalte-postizas.jpg');
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+}
+
+
+
+
+/* CALENDAR */
+
+
+.react-datepicker {
+
+  width: 100%;
+  border-radius: 16px !important;
+  border: none !important;
+  background-color: white !important;
+  box-shadow: 0 0 4px 2px rgba(103, 103, 103, 0.3) !important;
+  padding: 3px;
+}
+
+
+.react-datepicker__month-container {
+  width: 100%;
+  height: 100%;
+}
+
+.react-datepicker__header {
+  background-color: rgb(216 180 254) !important;
+  border-radius: 15px !important;
+  border-bottom: none !important;
+}
+
+.react-datepicker__day-names {
+  /* margin-left: 2px !important;
+  margin-right: 2px !important; */
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  font-size: medium;
+}
+
+.react-datepicker__day-name {
+
+  width: 1.5rem !important;
+
+}
+
+.react-datepicker__day {
+  /* width: 2rem !important; */
+  /* padding: 0.5rem !important; */
+  color: rgb(223, 159, 239) !important;
+  font-size: medium !important;
+}
+
+.react-datepicker__navigation {
+  top: 4px !important;
+}
+
+.react-datepicker__month-container {
+  border-radius: 15px !important;
+
+}
+
+.react-datepicker__month {
+  width: 100%;
+  margin: 0 !important;
+}
+
+
+.react-datepicker__week {
+  /* width: 2rem !important;
+  /* padding: 0.5rem !important; */
+  /* color: rgb(223, 159, 239) !important;
+  font-size: medium !important; */
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  margin-top: 12px;
+
+}
+
+.react-datepicker__day--selected {
+  background-color: rgba(239, 219, 233, 0.644) !important;
+}
+
+
+
+/*  AvailableHours */
+
+.box-shadow {
+  box-shadow: 0 0 4px 2px rgba(103, 103, 103, 0.3) !important;
+}
+
+
+
+
+
+
+
+.box-inner-manicure {
+
+  box-shadow: inset 2px 2px 2px 2px rgba(48, 48, 48, 0.751);
+  background: rgb(210, 209, 209);
+
+}
+
+.box-inner-pedicure {
+
+  box-shadow: inset 0px 2px 4px 2px rgba(48, 48, 48, 0.751);
+  background: rgb(210, 209, 209);
+
+}
+
+.manicure {
+  background-color: rgb(129 140 248);
+  color: white;
+}
+
+.pedicure {
+  background-color: rgb(251 113 133);
+  color: white;
+}
