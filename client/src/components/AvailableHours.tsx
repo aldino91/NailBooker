@@ -1,46 +1,98 @@
-import { useState } from 'react';
-import { bgColorDefault } from '../utils/constants';
+import { useEffect, useState } from 'react';
+import { formatDate } from '../utils/formateDate';
+import { typeNewBook } from '../utils/types';
+import LocalStorageHelper from '../utils/localStorage';
+import { listBook, listHoursAvalable } from '../utils/constants';
+import { filterAvalableHours } from '../utils/filterAvalableHours';
+import { Booking } from '../utils/interfaces';
 
-export default function AvailableHours(): JSX.Element {
-	const [selectedHours, setSelectedHours] = useState<string[]>([]);
+interface Props {
+	dateCurrent: string;
+	setBookSelected: (x: boolean) => void;
+}
 
-	const handlerSelected = (hours: string) => {
-		const findHour = selectedHours.find((h) => h === hours);
-		if (findHour !== undefined) {
-			const indexElement = selectedHours.indexOf(hours);
-			selectedHours.splice(indexElement, 1);
-			setSelectedHours([...selectedHours]);
-		} else {
-			setSelectedHours([...selectedHours, hours]);
+export default function AvailableHours({
+	dateCurrent,
+	setBookSelected,
+}: Props): JSX.Element {
+	const localStorage = new LocalStorageHelper();
+
+	const [getBook, setGetBook] = useState<typeNewBook>([
+		{ services: '', type: '', time: '', bookingTime: '' },
+	]);
+
+	const { bookingAvailable, hourBook } = filterAvalableHours(
+		getBook as typeNewBook,
+		listHoursAvalable,
+		listBook
+	);
+
+	const [selectedHours, setSelectedHours] =
+		useState<Array<Booking>>(bookingAvailable);
+
+	useEffect(() => {
+		const getLocalStorage = localStorage.load('book');
+		setGetBook(getLocalStorage as typeNewBook);
+		console.log(getLocalStorage);
+	}, []);
+
+	const handlerSelected = (book: Booking, index: number) => {
+		if (book.status === 'selected') {
+			bookingAvailable[index].status = 'disponible';
+			for (let i = index; i < bookingAvailable.length - 1; i++) {
+				bookingAvailable[i + 1].status = 'disponible';
+			}
+
+			setSelectedHours([...bookingAvailable]);
+			setBookSelected(true);
+		} else if (book.status === 'disponible') {
+			bookingAvailable[index].status = 'selected';
+			for (
+				let i = index;
+				i < index + hourBook - 1 && i + 1 < bookingAvailable.length;
+				i++
+			) {
+				bookingAvailable[i + 1].status = 'occupato';
+			}
+
+			setSelectedHours([...bookingAvailable]);
+
+			setBookSelected(false);
 		}
 	};
 
-	const hoursAvailable = filterAvalableHours();
+	const dayCurrent = formatDate(dateCurrent);
+
 	return (
 		<div className="w-full flex flex-row justify-center px-3 ">
 			<div className="w-full rounded-3xl box-shadow px-3 flex flex-col space-y-3 py-3">
-				<div className="">
-					<text className=" font-semibold">Orari disponibili</text>
+				<div className="w-full flex flex-row space-x-3">
+					<div>
+						<text className=" font-semibold">Orari disponibili: </text>
+					</div>
+					<div>
+						<text className=" font-semibold">{dayCurrent}</text>
+					</div>
 				</div>
 
 				<div className="grid grid-cols-4 gap-4">
-					{hoursAvailable.map((hours, i) => {
+					{selectedHours.map((book, i) => {
 						return (
 							<button
 								key={i}
-								// disabled={
-								// 	// hoursAvailable.find((h) => h.available === false)
-								// 	// 	? true
-								// 	// 	: false
-								// }
+								disabled={book.available === false ? true : false}
 								className={`border border-gray-200 rounded-3xl py-2 px-2 box-shadow mr-2 text-center cursor-pointer ${
-									hours.available === false
-										? 'bg-gray-500 text-white'
-										: 'bg-green-400 text-black'
+									book.status === 'occupato'
+										? 'bg-gray-400 text-white'
+										: book.status === 'selected'
+										? `bg-green-400 text-white`
+										: book.status === 'non basta il tempo'
+										? 'bg-rose-400 text-white'
+										: 'bg-white text-black'
 								}`}
-								// onClick={() => handlerSelected(hours.hourBook)}
+								onClick={() => handlerSelected(book, i)}
 							>
-								{hours.hourBook}
+								{book.hourBook}
 							</button>
 						);
 					})}
@@ -49,114 +101,3 @@ export default function AvailableHours(): JSX.Element {
 		</div>
 	);
 }
-
-export const filterAvalableHours = (): Array<{
-	hourBook: string;
-	time: number;
-	available: boolean;
-}> => {
-	let totalHoursNewBook = 0;
-
-	for (let i = 0; i < newBook.length; i++) {
-		totalHoursNewBook += newBook[i].time;
-	}
-
-	for (let i = 0; i < listHoursAvalable.length; i++) {
-		for (let reserved of listBook) {
-			if (listHoursAvalable[i].hourBook === reserved.hourBook) {
-				listHoursAvalable[i].available = false;
-			}
-		}
-	}
-
-	let selectedHoursAvailable = 0;
-
-	for (let i = 0; i <= listHoursAvalable.length; i++) {
-		// if (listHoursAvalable[i].available == listHoursAvalable[i + 1].available) {
-		// 	listHoursAvalable[i].available = true;
-		// } else {
-		// 	listHoursAvalable[i].available = false;
-		// }
-	}
-	console.log(listHoursAvalable);
-	return listHoursAvalable;
-};
-
-const listHoursAvalable = [
-	{
-		hourBook: '09:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '10:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '11:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '12:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '13:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '15:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '16:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '17:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '18:00',
-		time: 1,
-		available: true,
-	},
-	{
-		hourBook: '19:00',
-		time: 1,
-		available: true,
-	},
-];
-
-const listBook = [
-	{
-		services: 'Manicure classica',
-		type: 'manicure',
-		time: 1,
-		hourBook: '16:00',
-	},
-	{ services: 'Smalto gel', type: 'manicure', time: 1, hourBook: '10:00' },
-	{
-		services: 'Pedicure classica',
-		type: 'pedicure',
-		time: 1,
-		hourBook: '15:00',
-	},
-];
-
-const newBook = [
-	{
-		services: 'Manicure classica',
-		type: 'manicure',
-		time: 1,
-		bookingTime: '00:00',
-	},
-	{ services: 'Smalto gel', type: 'manicure', time: 1, bookingTime: '00:00' },
-];

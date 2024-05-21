@@ -164,9 +164,10 @@
 }
 
 .react-datepicker__header {
-  background-color: rgb(216 180 254) !important;
+  /* background-color: rgb(216 180 254) !important; */
   border-radius: 15px !important;
   border-bottom: none !important;
+  box-shadow: 0 0 4px 2px rgba(103, 103, 103, 0.3) !important;
 }
 
 .react-datepicker__day-names {
@@ -180,9 +181,7 @@
 }
 
 .react-datepicker__day-name {
-
-  width: 1.5rem !important;
-
+  width: 2.0rem !important;
 }
 
 .react-datepicker__day {
@@ -224,6 +223,11 @@
   background-color: rgba(239, 219, 233, 0.644) !important;
 }
 
+.react-datepicker__day--disabled {
+  /* background-color: rgba(202, 73, 40, 0.644) !important; */
+  color: rgb(199, 197, 199) !important;
+}
+
 
 
 /*  AvailableHours */
@@ -260,4 +264,13 @@
 .pedicure {
   background-color: rgb(251 113 133);
   color: white;
+}
+
+
+
+/*POP UP CONTENT*/
+
+.popup-content {
+  width: 100px !important;
+
 }
