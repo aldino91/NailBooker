@@ -2,10 +2,22 @@ import { useState } from 'react';
 import BaseLayout from '../components/BaseLayout';
 import HeaderBar from '../components/HeaderBar';
 import { useNavigate } from 'react-router-dom';
-import { bgColorDefault } from '../utils/constants';
+import {
+	bgColorDefault,
+	bgColorDisable,
+	servicesManicure,
+	servicesPedicure,
+} from '../utils/constants';
+import LocalStorageHelper from '../utils/localStorage';
+import { sumHours } from '../utils/sumHours';
 
 export default function Reserved(): JSX.Element {
+	const localStorage = new LocalStorageHelper<
+		Array<{ services: string; type: string; time: string }>
+	>();
+
 	const navigate = useNavigate();
+
 	const [services, setServices] = useState<string>('Manicure');
 
 	const [selectedServices, setSelectedServices] = useState<
@@ -29,6 +41,13 @@ export default function Reserved(): JSX.Element {
 
 		selectedServices.splice(indexElement, 1);
 		setSelectedServices([...selectedServices]);
+	};
+
+	const handlerSubmit = (
+		data: Array<{ services: string; type: string; time: string }>
+	) => {
+		localStorage.save(data, 'book');
+		navigate('/calendar');
 	};
 
 	return (
@@ -91,6 +110,10 @@ export default function Reserved(): JSX.Element {
 							);
 						})}
 					</div>
+
+					<div className="font-base text-gray-500">
+						<text>Durata prenotazione: {sumHours(selectedServices)}</text>
+					</div>
 				</div>
 				<div className="w-full px-2">
 					<div className="font-medium">
@@ -115,7 +138,6 @@ export default function Reserved(): JSX.Element {
 										}`}
 										onClick={() => {
 											handlerSelected(nailService);
-											console.log(selectedServices);
 										}}
 									>
 										<text>{nailService.services}</text>
@@ -143,7 +165,6 @@ export default function Reserved(): JSX.Element {
 										}`}
 										onClick={() => {
 											handlerSelected(nailService);
-											console.log(selectedServices);
 										}}
 									>
 										<text>{nailService.services}</text>
@@ -156,8 +177,11 @@ export default function Reserved(): JSX.Element {
 
 				<div className="w-full flex flex-row justify-center pb-10 px-3">
 					<button
-						className={`p-2 text-center ${bgColorDefault}  w-full rounded-3xl text-white`}
-						onClick={() => navigate('/calendar')}
+						className={`p-2 text-center ${
+							selectedServices.length === 0 ? bgColorDisable : bgColorDefault
+						}  w-full rounded-3xl text-white`}
+						onClick={() => handlerSubmit(selectedServices)}
+						disabled={selectedServices.length === 0 ? true : false}
 					>
 						Continuare
 					</button>
@@ -166,74 +190,3 @@ export default function Reserved(): JSX.Element {
 		</BaseLayout>
 	);
 }
-
-const servicesManicure = [
-	{ services: 'Manicure classica', type: 'manicure', time: '1' },
-	{ services: 'Smalto gel', type: 'manicure', time: '1' },
-	{ services: 'French manicure', type: 'manicure', time: '1' },
-	{ services: 'Rinforzo unghie naturali', type: 'manicure', time: '1' },
-	{ services: 'Nail art personalizzata', type: 'manicure', time: '1' },
-	{ services: 'Trattamento per unghie fragili', type: 'manicure', time: '1' },
-	{
-		services: 'Trattamento idratante per cuticole',
-		type: 'manicure',
-		time: '1',
-	},
-	{ services: 'Rimozione gel/acrilico', type: 'manicure', time: '1' },
-	{
-		services: 'Trattamento per unghie danneggiate',
-		type: 'manicure',
-		time: '1',
-	},
-	{ services: 'French pedicure', type: 'manicure', time: '1' },
-	{ services: 'Rifinitura e limatura unghie', type: 'manicure', time: '1' },
-	{ services: 'Servizio per unghie lunghe', type: 'manicure', time: '1' },
-	{ services: 'Servizio per unghie corte', type: 'manicure', time: '1' },
-	{ services: 'Trattamento per unghie gialle', type: 'manicure', time: '1' },
-	{ services: 'Trattamento per unghie opache', type: 'manicure', time: '1' },
-	{ services: 'Trattamento per unghie secche', type: 'manicure', time: '1' },
-	{ services: 'Smalto semipermanente', type: 'manicure', time: '1' },
-	{
-		services: 'Trattamento per unghie con gel ibrido',
-		type: 'manicure',
-		time: '1',
-	},
-	{ services: 'Servizio per unghie naturali', type: 'manicure', time: '1' },
-	{ services: 'Manicure e pedicure per uomini', type: 'manicure', time: '1' },
-];
-
-const servicesPedicure = [
-	{ services: 'Pedicure classica', type: 'pedicure', time: '1' },
-	{ services: 'French pedicure', type: 'pedicure', time: '1' },
-	{ services: 'Manicure e pedicure spa', type: 'pedicure', time: '1' },
-	{ services: 'Pedicure medicali', type: 'pedicure', time: '1' },
-	{ services: 'Massaggio mani e piedi', type: 'pedicure', time: '1' },
-	{
-		services: 'Trattamento esfoliante per mani e piedi',
-		type: 'pedicure',
-		time: '1',
-	},
-	{ services: 'Trattamento per unghie incarnite', type: 'pedicure', time: '1' },
-	{ services: 'Trattamento per unghie striate', type: 'pedicure', time: '1' },
-	{ services: 'Pedicure classica', type: 'pedicure', time: '1' },
-	{ services: 'Smalto gel', type: 'pedicure', time: '1' },
-	{ services: 'Ricostruzione unghie in gel', type: 'pedicure', time: '1' },
-	{ services: 'Ricostruzione unghie in acrilico', type: 'pedicure', time: '1' },
-	{ services: 'Decorazioni artistiche', type: 'pedicure', time: '1' },
-	{ services: 'Trattamento per unghie fragili', type: 'pedicure', time: '1' },
-	{ services: 'Extension unghie', type: 'pedicure', time: '1' },
-	{
-		services: 'Trattamento idratante per cuticole',
-		type: 'pedicure',
-		time: '1',
-	},
-	{ services: 'Rimozione gel/acrilico', type: 'pedicure', time: '1' },
-	{
-		services: 'Trattamento per unghie danneggiate',
-		type: 'pedicure',
-		time: '1',
-	},
-	{ services: 'French manicure', type: 'pedicure', time: '1' },
-	{ services: 'Rinforzo unghie naturali', type: 'pedicure', time: '1' },
-	{ services: 'Servizio per unghie lunghe', type: 'pedicure', time: '1' },
-];

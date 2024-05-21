@@ -1,7 +1,5 @@
 import express, { Router } from 'express';
 import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
-import prisma from '../postgres';
 import path from 'path';
 
 export class Server {
