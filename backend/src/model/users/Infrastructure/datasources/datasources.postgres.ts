@@ -90,7 +90,7 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 				email: user.email,
 				role: user.role,
 			},
-			'2592000'
+			'86400000'
 		);
 
 		if (!token || typeof token !== 'string')

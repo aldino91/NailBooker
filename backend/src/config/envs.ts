@@ -8,4 +8,5 @@ export const envs = {
 	MAILER_MAIL: get('MAILER_MAIL').required().asString(),
 	MAILER_SECRET_KEY: get('MAILER_SECRET_KEY').required().asString(),
 	WEBSERVICE_URL: get('WEBSERVICE_URL').required().asString(),
+	COOKIES_SECURE: get('COOKIES_SECURE').required().asBool(),
 };

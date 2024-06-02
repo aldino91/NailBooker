@@ -6,15 +6,18 @@ const authenticateToken = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const authHeader = req.headers['authorization'];
-	const token = authHeader && authHeader.split(' ')[1];
+	const token = req.cookies.auth_token;
 
-	if (!token) return res.sendStatus(401);
+	if (!token) {
+		return res.status(401).send({ error: 'Unauthorized' });
+	}
 
 	try {
 		const userValidate = await JwtAdapter.validateToken(token);
 
-		if (!userValidate) res.status(401).json('Unauthorized');
+		if (!userValidate) return res.status(401).send({ error: 'Unauthorized' });
+
+		req.body = userValidate;
 
 		next();
 	} catch (error) {

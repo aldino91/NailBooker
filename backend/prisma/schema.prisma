@@ -56,17 +56,15 @@ model Clients {
 model Bookings {
   id String @id @default(uuid())
 
-  author String
-
   reservarName String
 
-  jobType String[]
+  services String[]
 
-  bookingDate String
+  dayBook String
 
-  bookingTime String
+  hourBook String
 
-  duration Int
+  duration String
 
   Users Users? @relation(fields: [usersId], references: [id])
 

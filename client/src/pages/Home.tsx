@@ -4,6 +4,7 @@ import BodyHome from '../components/BodyHome';
 
 export function Home(): JSX.Element {
 	const navigate = useNavigate();
+
 	return (
 		<BaseLayout>
 			<div

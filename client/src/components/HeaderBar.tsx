@@ -10,7 +10,7 @@ export default function HeaderBar({ href, title }: Props): JSX.Element {
 	const navigate = useNavigate();
 	return (
 		<div
-			className={`w-full h-20 ${bgColorDefault} flex flex-row items-center rounded-b-3xl shadow-xl`}
+			className={`w-full h-20 ${bgColorDefault} flex flex-row items-center rounded-b-3xl shadow-xl mb-8`}
 		>
 			<div
 				className="w-1/12 cursor-pointer"

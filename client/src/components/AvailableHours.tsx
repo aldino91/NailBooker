@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { formatDate } from '../utils/formateDate';
-import { typeNewBook } from '../utils/types';
 import LocalStorageHelper from '../utils/localStorage';
-import { listBook, listHoursAvalable } from '../utils/constants';
-import { filterAvalableHours } from '../utils/filterAvalableHours';
-import { Booking } from '../utils/interfaces';
+import { listBookDays, listHoursAvalable } from '../utils/constants';
+import { useFilterAvalableHours } from '../hook/HookFilterAvalableHours';
+import { Booking, typeNewBook } from '../utils/interfaces';
 
 interface Props {
 	dateCurrent: string;
@@ -16,25 +15,21 @@ export default function AvailableHours({
 	setBookSelected,
 }: Props): JSX.Element {
 	const localStorage = new LocalStorageHelper();
+	const dayCurrent = formatDate(dateCurrent);
 
-	const [getBook, setGetBook] = useState<typeNewBook>([
-		{ services: '', type: '', time: '', bookingTime: '' },
+	const [getBook, setGetBook] = useState<typeNewBook[]>([
+		{ services: '', type: '', time: '', hourBook: '' },
 	]);
 
-	const { bookingAvailable, hourBook } = filterAvalableHours(
-		getBook as typeNewBook,
+	const { bookingAvailable, hourBook } = useFilterAvalableHours(
+		getBook as typeNewBook[],
 		listHoursAvalable,
-		listBook
+		listBookDays,
+		dateCurrent
 	);
 
 	const [selectedHours, setSelectedHours] =
 		useState<Array<Booking>>(bookingAvailable);
-
-	useEffect(() => {
-		const getLocalStorage = localStorage.load('book');
-		setGetBook(getLocalStorage as typeNewBook);
-		console.log(getLocalStorage);
-	}, []);
 
 	const handlerSelected = (book: Booking, index: number) => {
 		if (book.status === 'selected') {
@@ -61,7 +56,25 @@ export default function AvailableHours({
 		}
 	};
 
-	const dayCurrent = formatDate(dateCurrent);
+	useEffect(() => {
+		setSelectedHours(bookingAvailable);
+
+		const getLocalStorage: typeNewBook[] | unknown = localStorage.load('book');
+		if (getLocalStorage === null) {
+			const data = [
+				{
+					services: '',
+					type: '',
+					time: '',
+					bookingTime: '',
+					name: '',
+				},
+			];
+			setGetBook(data);
+		} else {
+			setGetBook(getLocalStorage as typeNewBook[]);
+		}
+	}, [bookingAvailable, selectedHours]);
 
 	return (
 		<div className="w-full flex flex-row justify-center px-3 ">

@@ -15,6 +15,8 @@ export class BooksController {
 	create = async (req: Request, res: Response) => {
 		const dto = CreatedDto.create(req.body);
 
+		console.log('dto create: ', dto);
+
 		new UseCaseCreatedBook(this.booksRepository)
 			.execute(dto)
 			.then((resp) => {
@@ -26,7 +28,8 @@ export class BooksController {
 	};
 
 	getAllBooks = async (req: Request, res: Response) => {
-		const idUser = req.body.idUser;
+		const idUser = req.params.idUser;
+		console.log('idUser', idUser);
 		new UseCaseGetAllBooks(this.booksRepository)
 			.execute(idUser)
 			.then((resp) => {
@@ -52,14 +55,33 @@ export class BooksController {
 	deleteById = async (req: Request, res: Response) => {
 		const id = req.body.id;
 
-		new UseCaseDeleteById(this.booksRepository)
-			.execute(id)
-			.then((resp) => {
-				return res.status(200).json(resp);
-			})
-			.catch((err) => {
-				return res.status(500).json(err);
-			});
+		const allDelete = await prisma.bookings.deleteMany();
+
+		res.status(200).json({ message: 'Todas las reservas eleminadas!' });
+
+		// new UseCaseDeleteById(this.booksRepository)
+		// 	.execute(id)
+		// 	.then((resp) => {
+		// 		return res.status(200).json(resp);
+		// 	})
+		// 	.catch((err) => {
+		// 		return res.status(500).json(err);
+		// 	});
+	};
+
+	rangeDate = async (req: Request, res: Response) => {
+		const dateFrom = req.body.dateFrom;
+		const dateTo = req.body.dateTo;
+
+		const listBooks = await prisma.bookings.findMany({
+			where: {
+				AND: [{ dayBook: { gte: dateFrom } }, { dayBook: { lte: dateTo } }],
+			},
+		});
+
+		console.log('listBooks', listBooks);
+
+		res.status(200).json(listBooks);
 	};
 
 	updated = async (req: Request, res: Response) => {

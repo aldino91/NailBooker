@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { bgColorDefault } from '../utils/constants';
+import { bgColorDefault, bgColorDisable } from '../utils/constants';
+import { fetchLogin } from '../api/fetchLogin';
+import LoadingSpinner from './LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
 
 export default function FormLogin(): JSX.Element {
+	const navigate = useNavigate();
+	const [showLoading, setShowLoading] = useState(false);
 	const [formData, setFormData] = useState({
-		name: '',
-		phone: '',
 		email: '',
 		password: '',
 	});
@@ -17,10 +20,31 @@ export default function FormLogin(): JSX.Element {
 		});
 	};
 
-	const handleSubmit = (e: any) => {
+	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 
-		console.log(formData);
+		try {
+			setShowLoading(true);
+
+			const resp = await fetchLogin(formData);
+
+			if (
+				resp?.data?.user.role === 'admin' &&
+				resp.data.message === 'Login successful'
+			) {
+				navigate('/dashboard-admin');
+			} else if (
+				resp?.data?.user.role !== 'admin' &&
+				resp.data.message === 'Login successful'
+			) {
+				navigate('/reserved');
+			}
+
+			setShowLoading(false);
+		} catch (error) {
+			console.log(error);
+			setShowLoading(false);
+		}
 	};
 
 	return (
@@ -31,7 +55,7 @@ export default function FormLogin(): JSX.Element {
 			>
 				<div className=" flex flex-col space-y-1 w-4/5">
 					<div>
-						<label className="font-semibold text-gray-500">Email:</label>
+						<label className="font-semibold text-gray-500">Email</label>
 					</div>
 					<div className="w-full">
 						<input
@@ -45,7 +69,7 @@ export default function FormLogin(): JSX.Element {
 				</div>
 				<div className=" flex flex-col space-y-1 w-4/5">
 					<div>
-						<label className="font-semibold text-gray-500">Password:</label>
+						<label className="font-semibold text-gray-500">Password</label>
 					</div>
 					<div className="w-full">
 						<input
@@ -60,9 +84,14 @@ export default function FormLogin(): JSX.Element {
 				<div className="w-4/5 pt-10">
 					<button
 						type="submit"
-						className={`p-3 rounded-3xl ${bgColorDefault} w-full text-white font-semibold`}
+						className={`p-3 rounded-3xl ${
+							showLoading ? bgColorDisable : bgColorDefault
+						} w-full text-white font-semibold`}
+						disabled={!showLoading ? false : true}
 					>
-						Login
+						<div className="flex flex-row justify-center">
+							{!showLoading ? 'Login' : <LoadingSpinner />}
+						</div>
 					</button>
 				</div>
 			</form>
