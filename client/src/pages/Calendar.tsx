@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AvailableHours from '../components/AvailableHours';
 import BaseLayout from '../components/BaseLayout';
 import FormCalendar from '../components/FormCalendar';
 import HeaderBar from '../components/HeaderBar';
 import { bgColorDefault, bgColorDisable } from '../utils/constants';
+import { fecthAuthorized } from '../api/fetchAuthorized';
 
 export default function Calendar(): JSX.Element {
 	const [startDate, setStartDate] = useState<Date | string>(new Date());
 	const [bookSelected, setBookSelected] = useState(true);
+
+	useEffect(() => {
+		fecthAuthorized('register')
+			.then((resp) => {
+				console.log(resp?.data);
+				return resp?.data;
+			})
+			.catch((err) => {
+				return err;
+			});
+	}, []);
 	return (
 		<BaseLayout>
 			<HeaderBar title="Calendario" href="reserved" />

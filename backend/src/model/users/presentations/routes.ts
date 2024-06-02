@@ -7,6 +7,7 @@ import EmailService from './EmailService.ts/EmailService';
 import { envs } from '../../../config/envs';
 import { env } from 'process';
 import prisma from '../../../postgres';
+import authenticateToken from './middleware/authenticateToken';
 
 export class AuthRoutes {
 	static get routes(): Router {
@@ -37,6 +38,12 @@ export class AuthRoutes {
 		});
 
 		router.post('/auth/resend-token', controller.resendToken);
+
+		router.get(
+			'/auth/protected-route',
+			authenticateToken,
+			controller.protectedRoute
+		);
 
 		router.use(errorHandler);
 

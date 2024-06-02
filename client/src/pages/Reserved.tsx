@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BaseLayout from '../components/BaseLayout';
 import HeaderBar from '../components/HeaderBar';
 import { useNavigate } from 'react-router-dom';
-import {
-	bgColorDefault,
-	bgColorDisable,
-	servicesManicure,
-	servicesPedicure,
-} from '../utils/constants';
+import { bgColorDefault, bgColorDisable } from '../utils/constants';
 import LocalStorageHelper from '../utils/localStorage';
 import { sumHours } from '../utils/sumHours';
+import { fecthAuthorized } from '../api/fetchAuthorized';
+import SegmentService from '../components/SegmentService';
+import { SelectedServices } from '../utils/interfaces';
+import ListServicesManicure from '../components/ListServicesManicure';
+import ListServicesPedicure from '../components/ListServicesPedicure';
+import { handlerSelected } from '../utils/handlerSelectedServices';
+import { handlerDeleted } from '../utils/handlerDeletedServices';
 
 export default function Reserved(): JSX.Element {
 	const localStorage = new LocalStorageHelper<
@@ -21,27 +23,8 @@ export default function Reserved(): JSX.Element {
 	const [services, setServices] = useState<string>('Manicure');
 
 	const [selectedServices, setSelectedServices] = useState<
-		Array<{ services: string; type: string; time: string }>
+		Array<SelectedServices>
 	>([]);
-
-	const handlerSelected = (data: {
-		services: string;
-		type: string;
-		time: string;
-	}) => {
-		setSelectedServices([...selectedServices, data]);
-	};
-
-	const handlerDeleted = (data: {
-		services: string;
-		type: string;
-		time: string;
-	}) => {
-		const indexElement = selectedServices.indexOf(data);
-
-		selectedServices.splice(indexElement, 1);
-		setSelectedServices([...selectedServices]);
-	};
 
 	const handlerSubmit = (
 		data: Array<{ services: string; type: string; time: string }>
@@ -49,6 +32,19 @@ export default function Reserved(): JSX.Element {
 		localStorage.save(data, 'book');
 		navigate('/calendar');
 	};
+
+	useEffect(() => {
+		fecthAuthorized('register')
+			.then((resp) => {
+				console.log(resp?.data);
+				if (resp?.data?.user.role === 'admin') {
+					navigate('/dashboard-admin');
+				}
+			})
+			.catch((err) => {
+				console.log('page reserved error: ', err);
+			});
+	}, []);
 
 	return (
 		<BaseLayout>
@@ -59,32 +55,7 @@ export default function Reserved(): JSX.Element {
 						<h2>Type services</h2>
 					</div>
 
-					<div className="w-full flex flex-row justify-center">
-						<div
-							className={`w-6/12 hover:opacity-80 ${
-								services === 'Pedicure'
-									? 'box-inner-manicure rounded-l-3xl'
-									: 'rounded-l-3xl manicure'
-							} p-2 text-center cursor-pointer`}
-							onClick={() => {
-								setServices('Manicure');
-							}}
-						>
-							Manicure
-						</div>
-						<div
-							className={`w-6/12 hover:opacity-80 ${
-								services === 'Manicure'
-									? 'box-inner-pedicure rounded-r-3xl'
-									: 'rounded-r-3xl pedicure'
-							} p-2 text-center cursor-pointer`}
-							onClick={() => {
-								setServices('Pedicure');
-							}}
-						>
-							Pedicure
-						</div>
-					</div>
+					<SegmentService services={services} setServices={setServices} />
 				</div>
 				<div className="w-full px-2 flex flex-col space-y-3 ">
 					<div className="font-medium">
@@ -103,7 +74,13 @@ export default function Reserved(): JSX.Element {
 											? 'bg-indigo-400 text-white'
 											: 'bg-rose-400 text-white'
 									} text-white rounded-3xl p-2 m-1 text-center cursor-pointer`}
-									onClick={() => handlerDeleted(service)}
+									onClick={() =>
+										handlerDeleted({
+											data: service,
+											selectedServices,
+											setSelectedServices,
+										})
+									}
 								>
 									{service.services}
 								</div>
@@ -121,57 +98,17 @@ export default function Reserved(): JSX.Element {
 					</div>
 
 					{services === 'Manicure' && (
-						<div className="w-full flex flex-wrap">
-							{servicesManicure.map((nailService, i) => {
-								return (
-									<button
-										key={i}
-										disabled={
-											selectedServices.find((data) => data === nailService)
-												? true
-												: false
-										}
-										className={`cursor-pointer border-2 border-indigo-200 rounded-3xl p-1 m-1 ${
-											selectedServices.find((data) => data === nailService)
-												? 'bg-indigo-400 text-white'
-												: 'bg-white text-black'
-										}`}
-										onClick={() => {
-											handlerSelected(nailService);
-										}}
-									>
-										<text>{nailService.services}</text>
-									</button>
-								);
-							})}
-						</div>
+						<ListServicesManicure
+							selectedServices={selectedServices}
+							setSelectedServices={setSelectedServices}
+						/>
 					)}
 
 					{services === 'Pedicure' && (
-						<div className="w-full flex flex-wrap">
-							{servicesPedicure.map((nailService, i) => {
-								return (
-									<button
-										key={i}
-										disabled={
-											selectedServices.find((data) => data === nailService)
-												? true
-												: false
-										}
-										className={`cursor-pointer border-2 border-rose-200 rounded-3xl p-1 m-1 ${
-											selectedServices.find((data) => data === nailService)
-												? 'bg-rose-400 text-white'
-												: 'bg-white text-black'
-										}`}
-										onClick={() => {
-											handlerSelected(nailService);
-										}}
-									>
-										<text>{nailService.services}</text>
-									</button>
-								);
-							})}
-						</div>
+						<ListServicesPedicure
+							selectedServices={selectedServices}
+							setSelectedServices={setSelectedServices}
+						/>
 					)}
 				</div>
 

@@ -15,15 +15,8 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 	async create(
 		createdDto: CreatedDto
 	): Promise<{ err?: ErrorBookingBase; data?: Books }> {
-		const {
-			author,
-			duration,
-			jobType,
-			reservarName,
-			bookingDate,
-			bookingTime,
-			usersId,
-		} = createdDto;
+		const { duration, services, reservarName, dayBook, hourBook, usersId } =
+			createdDto;
 
 		const user = await prisma.users.findFirst({
 			where: {
@@ -35,8 +28,8 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 
 		const isReserved = await prisma.bookings.findFirst({
 			where: {
-				bookingDate,
-				bookingTime,
+				dayBook,
+				hourBook,
 			},
 		});
 
@@ -46,11 +39,10 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 		try {
 			const book = await prisma.bookings.create({
 				data: {
-					author,
 					reservarName,
-					bookingDate,
-					bookingTime,
-					jobType,
+					dayBook,
+					hourBook,
+					services,
 					duration,
 					usersId,
 				},
@@ -59,8 +51,8 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 			const sent = await sendEmailBooking(
 				this.emailService,
 				user.email,
-				book.bookingDate,
-				book.bookingTime
+				book.dayBook,
+				book.hourBook
 			);
 
 			if (sent === false)
@@ -123,15 +115,8 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 	async updatedBook(
 		updateDto: UpdateDto
 	): Promise<{ err?: ErrorBookingBase; data?: Books }> {
-		const {
-			id,
-			author,
-			bookingDate,
-			bookingTime,
-			duration,
-			jobType,
-			reservarName,
-		} = updateDto;
+		const { id, dayBook, hourBook, duration, services, reservarName } =
+			updateDto;
 
 		const book = await prisma.bookings.findFirst({
 			where: {
@@ -148,11 +133,10 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 					id,
 				},
 				data: {
-					author,
-					bookingDate,
-					bookingTime,
+					dayBook,
+					hourBook,
 					duration,
-					jobType,
+					services,
 					reservarName,
 				},
 			});

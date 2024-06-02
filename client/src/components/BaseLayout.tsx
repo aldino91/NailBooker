@@ -5,5 +5,5 @@ interface Props {
 }
 
 export default function BaseLayout({ children }: Props): JSX.Element {
-	return <div className="w-full lg:w-1/2 mx-auto">{children}</div>;
+	return <div className="w-full lg:w-1/2 mx-auto static">{children}</div>;
 }

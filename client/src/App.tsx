@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Reserved from './pages/Reserved';
 import Calendar from './pages/Calendar';
+import DashboardAdmin from './pages/DashboardAdmin';
 
 function App() {
 	return (
@@ -17,6 +18,7 @@ function App() {
 				<Route path="/login" element={<Login />} />
 				<Route path="/reserved" element={<Reserved />} />
 				<Route path="/calendar" element={<Calendar />} />
+				<Route path="/dashboard-admin" element={<DashboardAdmin />} />
 			</Routes>
 		</div>
 	);

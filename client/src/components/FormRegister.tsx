@@ -1,12 +1,20 @@
 import { useState } from 'react';
-import { bgColorDefault } from '../utils/constants';
+import { bgColorDefault, bgColorDisable } from '../utils/constants';
+import { fetchRegister } from '../api/fetchRegister';
+import LoadingSpinner from './LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
 
 export default function FormRegister(): JSX.Element {
+	const navigate = useNavigate();
+	const [showLoading, setShowLoading] = useState(false);
 	const [formData, setFormData] = useState({
 		name: '',
-		phone: '',
+		surname: '',
+		phoneNumber: '',
 		email: '',
 		password: '',
+		emailValidated: false,
+		role: 'admin',
 	});
 
 	const handleChange = (e: any) => {
@@ -17,10 +25,35 @@ export default function FormRegister(): JSX.Element {
 		});
 	};
 
-	const handleSubmit = (e: any) => {
+	const handleSubmit = async (e: any) => {
 		e.preventDefault();
+		try {
+			setShowLoading(true);
 
-		console.log(formData);
+			const response = await fetchRegister(formData);
+
+			console.log(response.user);
+
+			setShowLoading(false);
+
+			setFormData({
+				name: '',
+				surname: '',
+				phoneNumber: '',
+				email: '',
+				password: '',
+				emailValidated: false,
+				role: 'admin',
+			});
+
+			navigate(`/login`);
+			return true;
+		} catch (error) {
+			console.log(error);
+			setShowLoading(false);
+
+			return false;
+		}
 	};
 
 	return (
@@ -31,7 +64,7 @@ export default function FormRegister(): JSX.Element {
 			>
 				<div className=" flex flex-col space-y-1 w-4/5">
 					<div>
-						<label className="font-semibold text-gray-500">Nombre:</label>
+						<label className="font-semibold text-gray-500">Nombre</label>
 					</div>
 					<div className="w-full">
 						<input
@@ -45,21 +78,35 @@ export default function FormRegister(): JSX.Element {
 				</div>
 				<div className=" flex flex-col space-y-1 w-4/5">
 					<div>
-						<label className="font-semibold text-gray-500">Telefono:</label>
+						<label className="font-semibold text-gray-500">Cognome</label>
 					</div>
 					<div className="w-full">
 						<input
 							type="text"
-							name="phone"
+							name="surname"
 							className="p-2 border-2 border-gray-300 rounded-lg w-full"
-							value={formData.phone}
+							value={formData.surname}
 							onChange={handleChange}
 						/>
 					</div>
 				</div>
 				<div className=" flex flex-col space-y-1 w-4/5">
 					<div>
-						<label className="font-semibold text-gray-500">Email:</label>
+						<label className="font-semibold text-gray-500">Telefono</label>
+					</div>
+					<div className="w-full">
+						<input
+							type="text"
+							name="phoneNumber"
+							className="p-2 border-2 border-gray-300 rounded-lg w-full"
+							value={formData.phoneNumber}
+							onChange={handleChange}
+						/>
+					</div>
+				</div>
+				<div className=" flex flex-col space-y-1 w-4/5">
+					<div>
+						<label className="font-semibold text-gray-500">Email</label>
 					</div>
 					<div className="w-full">
 						<input
@@ -73,7 +120,7 @@ export default function FormRegister(): JSX.Element {
 				</div>
 				<div className=" flex flex-col space-y-1 w-4/5">
 					<div>
-						<label className="font-semibold text-gray-500">Password:</label>
+						<label className="font-semibold text-gray-500">Password</label>
 					</div>
 					<div className="w-full">
 						<input
@@ -88,9 +135,15 @@ export default function FormRegister(): JSX.Element {
 				<div className="w-4/5 pt-10">
 					<button
 						type="submit"
-						className={`p-3 rounded-3xl ${bgColorDefault}  w-full text-white font-semibold`}
+						className={`p-3 rounded-3xl ${
+							showLoading ? bgColorDisable : bgColorDefault
+						}
+						  w-full text-white font-semibold`}
+						disabled={!showLoading ? false : true}
 					>
-						Invio
+						<div className="flex flex-row justify-center">
+							{!showLoading ? 'Invio' : <LoadingSpinner />}
+						</div>
 					</button>
 				</div>
 			</form>

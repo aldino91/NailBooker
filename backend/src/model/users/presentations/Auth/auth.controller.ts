@@ -8,6 +8,7 @@ import { ValidateEmailUseCase } from '../../domain/use-cases/validate.email.use.
 import path from 'path';
 import { ErrorInternalServer } from '../../../../errors/error.internal.server';
 import { ErrorTokenUser } from '../../../../errors/users/user.token.error';
+import { envs } from '../../../../config/envs';
 
 export class AuthController {
 	constructor(public readonly userRepository: UserRepository) {}
@@ -35,9 +36,18 @@ export class AuthController {
 		new LoginUserUseCase(this.userRepository)
 			.execute(loginUserDto!)
 			.then((user) => {
-				res.json(user);
+				res.cookie('auth_token', user.token, {
+					httpOnly: true,
+					secure: envs.COOKIES_SECURE,
+					maxAge: 24 * 60 * 60 * 1000,
+				});
+				res.json({ message: 'Login successful', user: user });
 			})
-			.catch((error) => res.status(400).json({ error }));
+			.catch((error) =>
+				res
+					.status(400)
+					.send({ message: 'user not found, make sure you are registered' })
+			);
 	};
 
 	validateEmail = (req: Request, res: Response) => {
@@ -76,5 +86,10 @@ export class AuthController {
 			.catch((error) => {
 				return new ErrorInternalServer('Error validated email!');
 			});
+	};
+
+	protectedRoute = (req: Request, res: Response) => {
+		const user = req.body;
+		res.status(200).send({ message: 'Successful authorisation', user });
 	};
 }

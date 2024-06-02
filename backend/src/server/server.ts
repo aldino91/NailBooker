@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
 import cors from 'cors';
 import path from 'path';
-
+import cookieParser from 'cookie-parser';
 export class Server {
 	public readonly app = express();
 	private readonly port: number;
@@ -15,6 +15,8 @@ export class Server {
 
 	async start() {
 		this.app.use(cors());
+
+		this.app.use(cookieParser());
 
 		this.app.use(express.json());
 

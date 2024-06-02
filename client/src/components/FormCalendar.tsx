@@ -1,4 +1,6 @@
 import DatePicker, { registerLocale } from 'react-datepicker';
+import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import { it } from 'date-fns/locale';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -15,13 +17,27 @@ export default function FormCalendar({
 	setStartDate,
 }: Props): JSX.Element {
 	const handlerDateSelected = (date: Date) => {
+		const day = date.getDay();
+
+		console.log('number day: ', day);
 		setStartDate(date.toISOString());
-		console.log('handlerDateSelected', date.toISOString());
 	};
 
 	const isWeekday = (date: Date): boolean => {
 		const day = date.getDay();
 		return day !== 0 && day !== 6;
+	};
+
+	const handleChange = (date: Date | null) => {
+		if (date) {
+			const timeZone = 'Europe/Rome';
+			const formattedDate = formatInTimeZone(
+				date,
+				timeZone,
+				'dd/MM/yyyy HH:mm:ss'
+			);
+			console.log('ON-CHANGE', formattedDate);
+		}
 	};
 
 	return (
@@ -30,7 +46,7 @@ export default function FormCalendar({
 				locale="it"
 				selected={startDate as Date}
 				onSelect={(date) => handlerDateSelected(date)}
-				onChange={(date) => console.log('ON-CHANGE', date?.toISOString())}
+				onChange={(date) => handleChange(date)}
 				minDate={new Date()}
 				filterDate={(date) => isWeekday(date)}
 				inline

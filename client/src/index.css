@@ -274,3 +274,21 @@
   width: 100px !important;
 
 }
+
+/*MODAL*/
+
+
+.bg-modal {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.expandable {
+  height: 300px;
+  transition: height 0.6s ease;
+  overflow: hidden;
+}
+
+.expandable.expanded {
+  height: 100%;
+  overflow: scroll;
+}
