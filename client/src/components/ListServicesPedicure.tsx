@@ -2,8 +2,8 @@ import { servicesPedicure } from '../utils/constants';
 import { SelectedServices } from '../utils/interfaces';
 
 interface Props {
-	selectedServices: Array<SelectedServices>;
-	setSelectedServices: (arg: Array<SelectedServices>) => void;
+	selectedServices: Array<{ [key: string]: string }>;
+	setSelectedServices: (arg: Array<{ [key: string]: string }>) => void;
 }
 
 export default function ListServicesPedicure({
@@ -13,8 +13,9 @@ export default function ListServicesPedicure({
 	const handlerSelected = (data: {
 		services: string;
 		type: string;
-		time: string;
+		duration: string;
 	}) => {
+		console.log('selectedServices: ', selectedServices);
 		setSelectedServices([...selectedServices, data]);
 	};
 	return (

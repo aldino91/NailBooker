@@ -2,6 +2,7 @@ import { ErrorBookingBase } from '../../../../errors/bookings/error.base.booking
 import { ErrorInternalServer } from '../../../../errors/error.internal.server';
 import { ErrorUserBase } from '../../../../errors/users/user.base.error';
 import prisma from '../../../../postgres';
+import { dateFromTimeStamp } from '../../../../utils/dateFromTimeStamp';
 import EmailService from '../../../users/presentations/EmailService.ts/EmailService';
 import sendEmailBooking from '../../../users/presentations/EmailService.ts/sendEmailBooking';
 import { DataSourcesBooks } from '../../domain/datasources.books';
@@ -48,17 +49,22 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 				},
 			});
 
-			const sent = await sendEmailBooking(
-				this.emailService,
-				user.email,
-				book.dayBook,
-				book.hourBook
-			);
+			const date = dateFromTimeStamp(book.dayBook);
 
-			if (sent === false)
-				return {
-					err: new ErrorBookingBase('Error sending confirmation email'),
-				};
+			if (book) {
+				const sent = await sendEmailBooking(
+					this.emailService,
+					user.email,
+					date,
+					book.hourBook
+				);
+
+				if (sent === false)
+					return {
+						err: new ErrorBookingBase('Error sending confirmation email'),
+					};
+			}
+
 			return { err: undefined, data: book };
 		} catch (error) {
 			return {

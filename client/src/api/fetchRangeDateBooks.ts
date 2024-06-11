@@ -1,12 +1,14 @@
 import axios from 'axios';
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
-export const fecthRangeDateBooks = async (dateFrom: string, dateTo: string) => {
+export const fecthRangeDateBooks = async (dateFrom: number, dateTo: number) => {
 	try {
 		const response = await axios.get(
 			`${import.meta.env.VITE_API_URL}/books/range-date`,
-			{ data: { dateFrom, dateTo } }
+			{
+				params: { dateFrom, dateTo },
+			}
 		);
 
 		return response;

@@ -15,8 +15,6 @@ export class BooksController {
 	create = async (req: Request, res: Response) => {
 		const dto = CreatedDto.create(req.body);
 
-		console.log('dto create: ', dto);
-
 		new UseCaseCreatedBook(this.booksRepository)
 			.execute(dto)
 			.then((resp) => {
@@ -29,7 +27,7 @@ export class BooksController {
 
 	getAllBooks = async (req: Request, res: Response) => {
 		const idUser = req.params.idUser;
-		console.log('idUser', idUser);
+
 		new UseCaseGetAllBooks(this.booksRepository)
 			.execute(idUser)
 			.then((resp) => {
@@ -53,35 +51,41 @@ export class BooksController {
 	};
 
 	deleteById = async (req: Request, res: Response) => {
-		const id = req.body.id;
+		const id = req.params.id;
 
-		const allDelete = await prisma.bookings.deleteMany();
+		// const allDelete = await prisma.bookings.deleteMany();
 
-		res.status(200).json({ message: 'Todas las reservas eleminadas!' });
+		// res.status(200).json({ message: 'Todas las reservas eleminadas!' });
 
-		// new UseCaseDeleteById(this.booksRepository)
-		// 	.execute(id)
-		// 	.then((resp) => {
-		// 		return res.status(200).json(resp);
-		// 	})
-		// 	.catch((err) => {
-		// 		return res.status(500).json(err);
-		// 	});
+		new UseCaseDeleteById(this.booksRepository)
+			.execute(id)
+			.then((resp) => {
+				console.log('Delete book con id: ', id);
+				return res.status(200).json(resp);
+			})
+			.catch((err) => {
+				return res.status(500).json(err);
+			});
 	};
 
 	rangeDate = async (req: Request, res: Response) => {
-		const dateFrom = req.body.dateFrom;
-		const dateTo = req.body.dateTo;
+		const data = req.query;
 
-		const listBooks = await prisma.bookings.findMany({
-			where: {
-				AND: [{ dayBook: { gte: dateFrom } }, { dayBook: { lte: dateTo } }],
-			},
-		});
+		const dateFrom = Number(data.dateFrom);
 
-		console.log('listBooks', listBooks);
+		const dateTo = Number(data.dateTo);
 
-		res.status(200).json(listBooks);
+		try {
+			const listBooks = await prisma.bookings.findMany({
+				where: {
+					AND: [{ dayBook: { gte: dateFrom } }, { dayBook: { lte: dateTo } }],
+				},
+			});
+
+			res.status(200).json(listBooks);
+		} catch (error) {
+			res.status(500).json(error);
+		}
 	};
 
 	updated = async (req: Request, res: Response) => {

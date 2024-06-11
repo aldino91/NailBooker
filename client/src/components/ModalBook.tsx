@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Booking, ListBook, ModalData, typeNewBook } from '../utils/interfaces';
 import SegmentService from './SegmentService';
 import ListServicesManicure from './ListServicesManicure';
@@ -8,38 +8,44 @@ import { sumHours } from '../utils/sumHours';
 import { fromStringToNum } from '../utils/fromStringToNum';
 import HeaderInfoModalBook from './HeaderInfoModalBook';
 import ButtonClose from './ButtonClose';
+import { DataCreated, fetchCreatedBookings } from '../api/fetchCreatedBooking';
+import LocalStorageHelper from '../utils/localStorage';
+import LoadingSpinner from './LoadingSpinner';
+import { sumListServices } from '../utils/sumListServices';
+import { createdBooking } from '../utils/createdBooking';
 
 interface Props {
 	showModal: ModalData;
 	setShowModal: (arg: ModalData) => void;
-	// setSelectedHours: (arg: Booking[]) => void;
-	// bookingAvailable: Booking[];
-	newListBooks: ListBook[] | undefined;
-	setNewListBooks: (book: ListBook[]) => void;
-	setGetBook: (book: typeNewBook[]) => void;
-	listBooks: ListBook[] | undefined;
-	dateCurrent: string;
+	bookAvalable: ListBook[] | undefined;
+	setBookAvalable: (arg: ListBook[]) => void;
 }
 
 export default function ModalBook({
 	showModal,
 	setShowModal,
-	// setSelectedHours,
-	// bookingAvailable,
-	newListBooks,
-	setNewListBooks,
-	setGetBook,
-	listBooks,
-	dateCurrent,
+	bookAvalable,
+	setBookAvalable,
 }: Props): JSX.Element {
+	const localStorageId = new LocalStorageHelper<string>();
 	const [services, setServices] = useState<string>('Manicure');
-	const [selectedServices, setSelectedServices] = useState<Array<typeNewBook>>(
-		[]
-	);
+	const [selectedServices, setSelectedServices] = useState<
+		Array<{ [key: string]: string }>
+	>([]);
 
 	const [formData, setFormData] = useState({
 		name: '',
 	});
+	const createdBook: DataCreated = {
+		hourBook: showModal?.hour!,
+		reservarName: formData.name,
+		services: sumListServices(selectedServices),
+		duration: sumHours(selectedServices),
+		dayBook: showModal?.day!,
+		usersId: localStorageId.load('userId')!,
+	};
+
+	const [loading, setLoading] = useState(false);
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -49,59 +55,45 @@ export default function ModalBook({
 		});
 	};
 
-	// const filterDayAvailable = listBooks.find((date) => date.day === dateCurrent);
-	// const listBookDayCurrent = filterDayAvailable?.book;
+	const handlerSave = async () => {
+		try {
+			setLoading(true);
 
-	const handlerSave = () => {
-		const sumHoursNewBook = sumHours(selectedServices);
+			const response = await fetchCreatedBookings(createdBook);
 
-		const fromStringToNumber = fromStringToNum(sumHoursNewBook);
+			const id = response?.data.data.id;
 
-		let sumServices = [];
-
-		if (newListBooks !== undefined) {
-			for (let i = 0; i < selectedServices.length; i++) {
-				sumServices.push(selectedServices[i].services);
-			}
-
-			newListBooks?.push({
+			const dataAddList = {
 				hourBook: showModal?.hour!,
+				reservarName: formData.name,
+				services: sumListServices(selectedServices),
+				duration: sumHours(selectedServices),
+				dayBook: showModal?.day!,
+				usersId: localStorageId.load('userId')!,
+				available: false,
+				status: 'occupato',
+				time: '00:00',
+				id: id,
+			};
+			const addBooking: ListBook[] = await createdBooking({
+				dataAddList,
+				bookAvalable,
+				showModal,
 				name: formData.name,
-				services: sumServices as string[],
-				duration: sumHoursNewBook,
-				type: 'manicure',
+				id,
+				usersId: localStorageId.load('userId')!,
+				selectedServices,
 			});
-			setNewListBooks([...newListBooks]);
+			setBookAvalable([...addBooking!]);
+
+			setLoading(false);
+			setShowModal({ open: !showModal.open });
+		} catch (error) {
+			console.log('Error Created book: ', error);
+			setLoading(false);
 			setShowModal({ open: !showModal.open });
 		}
-
-		// if (showModal.status === 'disponible') {
-		// 	bookingAvailable[showModal.index!].status = 'occupato';
-		// 	bookingAvailable[showModal.index!].hourBook = showModal.hour!;
-		// 	bookingAvailable[showModal.index!].available = false;
-		// 	bookingAvailable[showModal.index!].name = formData.name;
-		// 	bookingAvailable[showModal.index!].duration = sumHoursNewBook;
-
-		// 	for (
-		// 		let j = showModal.index!;
-		// 		j < showModal.index! + fromStringToNumber &&
-		// 		j < bookingAvailable.length;
-		// 		j++
-		// 	) {
-		// 		bookingAvailable[j].status = 'occupato';
-		// 		bookingAvailable[j].available = false;
-		// 		bookingAvailable[j].name = formData.name;
-		// 	}
-		// 	setSelectedHours(bookingAvailable);
-		// 	setShowModal({ open: !showModal.open });
-		// 	setGetBook(selectedServices);
-		// 	setSelectedServices([]);
-		// }
 	};
-
-	// useEffect(() => {
-	// 	console.log('listBooks', listBooks);
-	// }, [listBooks]);
 
 	return (
 		<div
@@ -169,11 +161,12 @@ export default function ModalBook({
 
 						<div className="w-full px-2 py-4 rounded-b order-last">
 							<button
-								className="bg-emerald-500 text-white active:bg-emerald-600 w-full font-bold text-sm px-6 py-3 rounded-3xl shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+								disabled={loading ? true : false}
+								className="flex flex-row justify-center bg-emerald-500 text-white active:bg-emerald-600 w-full font-bold text-sm px-6 py-3 rounded-3xl shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
 								type="button"
 								onClick={() => handlerSave()}
 							>
-								Salva
+								{!loading ? 'Salva' : <LoadingSpinner />}
 							</button>
 						</div>
 					</div>

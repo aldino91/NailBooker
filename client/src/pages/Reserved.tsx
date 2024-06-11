@@ -7,13 +7,13 @@ import LocalStorageHelper from '../utils/localStorage';
 import { sumHours } from '../utils/sumHours';
 import { fecthAuthorized } from '../api/fetchAuthorized';
 import SegmentService from '../components/SegmentService';
-import { SelectedServices } from '../utils/interfaces';
 import ListServicesManicure from '../components/ListServicesManicure';
 import ListServicesPedicure from '../components/ListServicesPedicure';
 import { handlerSelected } from '../utils/handlerSelectedServices';
 import { handlerDeleted } from '../utils/handlerDeletedServices';
 
 export default function Reserved(): JSX.Element {
+	const localStorageId = new LocalStorageHelper<string>();
 	const localStorage = new LocalStorageHelper<
 		Array<{ services: string; type: string; time: string }>
 	>();
@@ -22,14 +22,12 @@ export default function Reserved(): JSX.Element {
 
 	const [services, setServices] = useState<string>('Manicure');
 
-	const [selectedServices, setSelectedServices] = useState<
-		Array<SelectedServices>
-	>([]);
+	const [selectedServices, setSelectedServices] = useState<Array<any>>([]);
 
 	const handlerSubmit = (
 		data: Array<{ services: string; type: string; time: string }>
 	) => {
-		localStorage.save(data, 'book');
+		localStorage.save('book', data);
 		navigate('/calendar');
 	};
 
@@ -38,6 +36,8 @@ export default function Reserved(): JSX.Element {
 			.then((resp) => {
 				console.log(resp?.data);
 				if (resp?.data?.user.role === 'admin') {
+					localStorageId.save('userId', resp.data?.user.id);
+
 					navigate('/dashboard-admin');
 				}
 			})

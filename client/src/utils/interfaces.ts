@@ -1,28 +1,49 @@
 export interface Booking {
+	id: string;
 	hourBook: string;
 	time: string;
 	available: boolean;
 	status: string;
-	name: string;
+	reservarName: string;
+	services?: string[];
 	start: string;
 	duration: string;
 }
 
 export interface ListBook {
-	services: string | string[];
-	type: string;
+	available: boolean;
+	createdAt?: string;
+	dayBook?: number;
 	duration: string;
 	hourBook: string;
-	name: string;
+	id?: string;
+	start?: string;
+	status: string;
+	reservarName: string;
+	time: string;
+	services: string[];
+	updatedAt?: string;
+	usersId?: string;
 }
 
 export interface ModalData {
+	id?: string;
 	open: boolean;
 	hour?: string;
-	day?: string;
+	day?: number;
 	status?: string;
 	index?: number;
 	name?: string;
+	start?: string;
+}
+export interface ModalDataEdit {
+	id?: string;
+	open: boolean;
+	hour?: string;
+	day?: number;
+	status?: string;
+	index?: number;
+	reservarName?: string;
 	start?: string;
 }
 
@@ -39,9 +60,8 @@ export interface ListBookDays {
 	book: ListBook[];
 }
 
-// export interface SelectedServices {
-// 	services: string;
-// 	type: string;
-// 	time: string;
-// 	hourBook
-// }
+export interface SelectedServices {
+	services: string;
+	type: string;
+	duration: string;
+}

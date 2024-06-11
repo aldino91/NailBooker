@@ -1,4 +1,5 @@
 import { ErrorSentEmail } from '../../../../errors/emails/ErrorSendEmails';
+import { formatDate } from '../../../../utils/formateDate';
 import EmailService from './EmailService';
 import { optionsEmails } from './optionsEmail';
 import { htmlBooking } from './templateHtml/BookingEmail';

@@ -1,167 +1,163 @@
-import { useState } from 'react';
-import {
-	Booking,
-	ListBookDays,
-	ModalData,
-	typeNewBook,
-} from '../utils/interfaces';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { ListBook } from '../utils/interfaces';
 import SegmentService from './SegmentService';
 import ListServicesManicure from './ListServicesManicure';
 import ListServicesPedicure from './ListServicesPedicure';
 import ListServicesSelected from './ListServicesSelected';
 import { sumHours } from '../utils/sumHours';
-import { fromStringToNum } from '../utils/fromStringToNum';
 import FormCalendar from './FormCalendar';
 import ButtonClose from './ButtonClose';
 import HeaderInfoModalEdit from './HeaderInfoModalEdit';
 import ButtonFooterModalEdit from './ButtonFooterModalEdit';
-import AvailableHours from './AvailableHours';
+import { fetchDeleteBook } from '../api/fetchDeleteBook';
+import { getWeek } from 'date-fns';
+import { dateFromTo } from '../utils/dateFromTo';
+import { fecthRangeDateBooks } from '../api/fetchRangeDateBooks';
+import { searchServicesForEdit } from '../utils/searchServicesForEdit';
+import AvailableHoursEdit from './AvailableHoursEdit';
 
 interface Props {
-	showModal: ModalData;
-	setShowModal: (arg: ModalData) => void;
-	// setSelectedHours: (arg: Booking[]) => void;
-	// bookingAvailable: Booking[];
-	setGetBook: (book: typeNewBook[]) => void;
-	listBooks: ListBookDays[];
-	dateCurrent: string;
+	showModal: boolean;
+	setShowModal: (arg: boolean) => void;
+	bookAvalable: ListBook[] | undefined;
+	setBookAvalable: (arg: ListBook[]) => void;
+	bookSelected: ListBook;
+	setBookSelected: (arg: ListBook) => void;
+	dayCurrent: Date;
 }
 
 export default function ModalBookEdit({
 	showModal,
 	setShowModal,
-	// setSelectedHours,
-	// bookingAvailable,
-	setGetBook,
-	listBooks,
-	dateCurrent,
+	bookAvalable,
+	setBookAvalable,
+	bookSelected,
+	setBookSelected,
+	dayCurrent,
 }: Props): JSX.Element {
 	const [showEditBook, setShowEditBook] = useState(false);
-	const [startDate, setStartDate] = useState<Date | string>(new Date());
+	const [showLoading, setShowLoading] = useState(false);
+	const [startDate, setStartDate] = useState<Date>(dayCurrent);
 	const [services, setServices] = useState<string>('Manicure');
-	const [selectedServices, setSelectedServices] = useState<Array<typeNewBook>>(
-		[]
-	);
-	const [bookSelected, setBookSelected] = useState(true);
+	const [changeDayFilter, setChangeDayFilter] = useState(false);
+	const [selectedServices, setSelectedServices] = useState<
+		Array<{ [key: string]: string }>
+	>(searchServicesForEdit(bookSelected.services));
 
-	const handlerDelete = () => {
-		// const filterDayAvailable = listBooks.find(
-		// 	(date) => date.day === dateCurrent
-		// );
-		// const listBookDayCurrent = filterDayAvailable?.book;
+	const [listBookDays, setListBookDays] = useState<ListBook[]>();
 
-		// const filterBookingDelete = bookingAvailable.filter(
-		// 	(book) => book.start === showModal.start
-		// );
+	const [listBooks, setListBooks] = useState<ListBook[]>();
 
-		// const index = bookingAvailable.findIndex(
-		// 	(element) => element.hourBook === filterBookingDelete[0].hourBook
-		// );
+	const [formData, setFormData] = useState({
+		name: '',
+	});
+	const [weekCurrent, setWeekCurrent] = useState(0);
 
-		// if (listBookDayCurrent) {
-		// 	for (let i = 0; i < listBookDayCurrent?.length; i++) {
-		// 		bookingAvailable[index] = {
-		// 			available: false,
-		// 			hourBook: '',
-		// 			name: '',
-		// 			start: '',
-		// 			status: 'disponible',
-		// 			time: '00:30',
-		// 		};
+	const [dateSelected, setDateSelected] = useState<Date>(new Date());
 
-		// 		listBookDayCurrent.splice(i, 1);
-		// 		setSelectedHours([...bookingAvailable]);
-		// 	}
-		// }
-		setShowModal({ open: !showModal.open });
-		// console.log(
-		// 	'listBookDayCurrent: ',
-		// 	listBookDayCurrent,
-		// 	'filterBookingDelete: ',
-		// 	filterBookingDelete
-		// );
+	const handlerDelete = async () => {
+		try {
+			setShowLoading(true);
+			await fetchDeleteBook(bookSelected?.id!);
+			if (bookAvalable !== undefined) {
+				for (let i = 0; i < bookAvalable.length; i++) {
+					if (bookAvalable[i].start === bookSelected?.start) {
+						bookAvalable[i] = {
+							available: true,
+							duration: '00:00',
+							reservarName: '',
+							hourBook: bookAvalable[i].hourBook,
+							status: 'disponible',
+							services: [''],
+							id: '',
+							start: '',
+							time: '',
+						};
+					}
+				}
+				setBookAvalable([...bookAvalable]);
+				setShowLoading(false);
+				setShowModal(!showModal);
+			} else {
+				setShowLoading(false);
+				setShowModal(!showModal);
+			}
+		} catch (error) {
+			console.log('ERROR FETCH: ', error);
+			setShowLoading(false);
+			setShowModal(!showModal);
+		}
+	};
 
-		// if (listBookDayCurrent) {
-		// 	for (let i = 0; i < listBookDayCurrent.length; i++) {
-		// 		for (let j = 0; j < filterBookingDelete.length; j++) {
-		// 			if (
-		// 				bookingAvailable[i].hourBook === filterBookingDelete[j].hourBook
-		// 			) {
-		// 				bookingAvailable[i] = {
-		// 					hourBook: filterBookingDelete[j].hourBook,
-		// 					time: '00:30',
-		// 					available: true,
-		// 					status: 'disponible',
-		// 					name: '',
-		// 					start: '',
-		// 				};
-		// 			}
-		// 		}
-		// 	}
-		// 	setSelectedHours([...bookingAvailable]);
-		// }
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
 	};
 
 	const handlerSave = () => {
-		const sumHoursNewBook = sumHours(selectedServices);
-		const fromStringToNumber = fromStringToNum(sumHoursNewBook);
-		// if (showModal.status === 'selected') {
-		// 	bookingAvailable[showModal.index!].status = 'occupato';
-		// 	for (
-		// 		let j = showModal.index!;
-		// 		j < showModal.index! + fromStringToNumber &&
-		// 		j < bookingAvailable.length;
-		// 		j++
-		// 	) {
-		// 		bookingAvailable[j].status = 'occupato';
-		// 	}
-
-		// 	setShowModal({ open: !showModal.open });
-		// 	setSelectedHours([...bookingAvailable]);
-		// 	setGetBook(selectedServices);
-		// } else if (showModal.status === 'disponible') {
-		// 	bookingAvailable[showModal.index!].status = 'occupato';
-		// 	bookingAvailable[showModal.index!].hourBook = showModal.hour!;
-
-		// 	for (
-		// 		let j = showModal.index!;
-		// 		j < showModal.index! + fromStringToNumber &&
-		// 		j < bookingAvailable.length;
-		// 		j++
-		// 	) {
-		// 		bookingAvailable[j].status = 'occupato';
-		// 	}
-		// 	setSelectedHours([...bookingAvailable]);
-		// 	setGetBook(selectedServices);
-		// 	setSelectedServices([]);
-		// 	setShowModal({ open: !showModal.open });
-		// }
+		console.log('bookSelected: ', bookSelected);
+		console.log('dateSelected: ', dateSelected);
+		console.log('selectedServices: ', selectedServices);
+		console.log('formData: ', formData.name);
 	};
+
+	useEffect(() => {
+		const { dateFrom, dateTo, dateCurrent } = dateFromTo(startDate as Date);
+		const checkDay = new Date(startDate);
+		const checkWeek = getWeek(checkDay);
+		setWeekCurrent(checkWeek);
+		const fetchBooks = async () => {
+			try {
+				const resp = await fecthRangeDateBooks(dateFrom, dateTo);
+				setListBookDays(resp?.data);
+				setDateSelected(startDate);
+				const bookForDayCurrent = resp?.data.filter(
+					(date: ListBook) => date.dayBook === dateCurrent
+				);
+				setListBooks(bookForDayCurrent);
+				setChangeDayFilter(!changeDayFilter);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
+		fetchBooks();
+	}, [weekCurrent]);
+
+	useEffect(() => {
+		const { dateCurrent } = dateFromTo(dateSelected as Date);
+
+		if (listBookDays) {
+			const bookForDayCurrent = listBookDays.filter(
+				(date) => date.dayBook === dateCurrent
+			);
+			setListBooks(bookForDayCurrent);
+		}
+	}, [changeDayFilter]);
 
 	return (
 		<div
 			className={`h-full absolute top-0 left-0 z-40 ${
-				showModal.open
-					? 'animate-slideInUp w-full'
-					: 'animate-slideOutDown w-full'
+				showModal ? 'animate-slideInUp w-full' : 'animate-slideOutDown w-full'
 			}`}
 		>
 			<div className="justify-center items-center flex overflow-x-hidden inset-0 fixed outline-none focus:outline-none w-full h-full bg-modal">
 				<div className="w-full lg:w-1/2 mx-auto h-full flex flex-col justify-center">
 					{/*content*/}
 					<div
-						className={`rounded-lg shadow-lg relative flex flex-col justify-between space-y-4 w-full bg-white outline-none focus:outline-none border-blueGray-200 h-full overflow-y-scroll  border expandable ${
+						className={`rounded-lg shadow-lg relative flex flex-col justify-between space-y-4 w-full bg-white outline-none focus:outline-none border-blueGray-200 h-full overflow-y-scroll expandable ${
 							showEditBook ? 'expanded' : ''
 						} `}
 					>
-						<ButtonClose
-							setClose={() => setShowModal({ open: !showModal.open })}
-						/>
+						<ButtonClose setClose={() => setShowModal(!showModal)} />
 						{/*header*/}
 						<HeaderInfoModalEdit
 							close={showEditBook}
 							setClose={setShowEditBook}
-							data={showModal}
+							data={bookSelected}
 						/>
 
 						<div
@@ -175,6 +171,11 @@ export default function ModalBookEdit({
 								<FormCalendar
 									startDate={startDate}
 									setStartDate={setStartDate}
+									changeDayFilter={changeDayFilter}
+									setChangeDayFilter={setChangeDayFilter}
+									setDateSelected={setDateSelected}
+									weekCurrent={weekCurrent}
+									setWeekCurrent={setWeekCurrent}
 								/>
 							</div>
 
@@ -210,9 +211,11 @@ export default function ModalBookEdit({
 								</div>
 							</div>
 							<div className="">
-								<AvailableHours
-									dateCurrent={startDate as string}
-									setBookSelected={setBookSelected}
+								<AvailableHoursEdit
+									dateCurrent={startDate}
+									listBooks={listBooks}
+									bookSelected={bookSelected}
+									selectedServices={selectedServices}
 								/>
 							</div>
 							<form className="w-full px-2">
@@ -224,9 +227,10 @@ export default function ModalBookEdit({
 										<input
 											type="text"
 											name="name"
+											placeholder={bookSelected.reservarName}
 											className="p-2 border-2 border-gray-300 rounded-lg w-full"
-											// value={formData.name}
-											// onChange={handleChange}
+											value={formData.name}
+											onChange={handleChange}
 										/>
 									</div>
 								</div>
@@ -237,6 +241,7 @@ export default function ModalBookEdit({
 							handlerSave={handlerSave}
 							handlerDelete={handlerDelete}
 							showEditBook={showEditBook}
+							showLoading={showLoading}
 						/>
 					</div>
 				</div>
