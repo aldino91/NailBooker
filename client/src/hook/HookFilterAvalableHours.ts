@@ -27,7 +27,9 @@ export const useFilterAvalableHours = (
 		if (listBookDayCurrent) {
 			for (let i = 0; i < listHoursAvalable.length; i++) {
 				for (let k = 0; k < listBookDayCurrent.length; k++) {
-					let hoursNotAvailables = fromStringToNum(listBookDayCurrent[k].time);
+					let hoursNotAvailables = fromStringToNum(
+						listBookDayCurrent[k].hourBook
+					);
 					if (
 						listHoursAvalable[i].hourBook === listBookDayCurrent[k].hourBook
 					) {

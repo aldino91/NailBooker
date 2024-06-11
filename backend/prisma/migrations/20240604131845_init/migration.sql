@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Bookings" ALTER COLUMN "dayBook" SET DATA TYPE BIGINT;

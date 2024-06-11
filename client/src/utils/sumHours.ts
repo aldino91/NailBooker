@@ -1,9 +1,9 @@
-export function sumHours(listHours: Array<{ time: string }>) {
+export function sumHours(listHours: Array<{ [key: string]: string }>) {
 	let newHour = '00:00';
 
 	for (let i = 0; i < listHours.length; i++) {
 		var [horas1, minutos1] = newHour.split(':').map(Number);
-		var [horas2, minutos2] = listHours[i].time.split(':').map(Number);
+		var [horas2, minutos2] = listHours[i].duration.split(':').map(Number);
 
 		var totalMinutos = minutos1 + minutos2;
 

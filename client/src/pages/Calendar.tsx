@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import AvailableHours from '../components/AvailableHours';
+import AvailableHours from '../components/AvailableHoursEdit';
 import BaseLayout from '../components/BaseLayout';
 import FormCalendar from '../components/FormCalendar';
 import HeaderBar from '../components/HeaderBar';

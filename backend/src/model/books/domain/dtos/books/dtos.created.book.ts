@@ -3,7 +3,7 @@ import { ErrorCreatedDtos } from '../../../../../errors/bookings/error.created.d
 export class CreatedDto {
 	private constructor(
 		public readonly reservarName: string,
-		public readonly dayBook: string,
+		public readonly dayBook: number,
 		public readonly hourBook: string,
 		public readonly services: string[],
 		public readonly duration: string,
@@ -13,7 +13,6 @@ export class CreatedDto {
 	static create(object: any): CreatedDto {
 		const { reservarName, services, duration, usersId, dayBook, hourBook } =
 			object;
-
 		if (!reservarName) throw new ErrorCreatedDtos('Missing Reserved Name!!');
 		if (!dayBook) throw new ErrorCreatedDtos('Missing Booking Date !!');
 		if (!hourBook) throw new ErrorCreatedDtos('Missing Booking Time !!');

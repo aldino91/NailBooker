@@ -22,13 +22,13 @@ export class BooksRoutes {
 
 		router.post('/books-created', controller.create);
 
-		router.get('/all-books/:id', controller.getAllBooks);
+		router.get('/all-books', controller.getAllBooks);
 
 		router.get('/books', controller.getById);
 
-		router.get('/books/range-date', authenticateToken, controller.rangeDate);
+		router.get('/books/range-date', controller.rangeDate);
 
-		router.delete('/book-delete', controller.deleteById);
+		router.delete('/book-delete/:id', controller.deleteById);
 
 		router.put('/book-update', authenticateToken, controller.updated);
 

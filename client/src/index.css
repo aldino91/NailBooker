@@ -283,9 +283,9 @@
 }
 
 .expandable {
-  height: 300px;
+  height: 400px;
   transition: height 0.6s ease;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .expandable.expanded {

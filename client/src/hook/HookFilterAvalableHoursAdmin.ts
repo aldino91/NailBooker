@@ -14,7 +14,7 @@ export const useFilterAvailableHoursAdmin = (
 
 	useEffect(() => {
 		const sumHoursNewBook = sumHours(newBook);
-		const listHoursAvailableCopy = JSON.parse(
+		const listHoursAvailableCopy: Booking[] = JSON.parse(
 			JSON.stringify(listHoursAvalable)
 		);
 
@@ -26,8 +26,9 @@ export const useFilterAvailableHoursAdmin = (
 					if (listHoursAvailableCopy[i].hourBook === listBook[k].hourBook) {
 						listHoursAvailableCopy[i].available = false;
 						listHoursAvailableCopy[i].status = 'occupato';
-						listHoursAvailableCopy[i].name = listBook[k].name;
+						listHoursAvailableCopy[i].name = listBook[k].reservarName;
 						listHoursAvailableCopy[i].start = listBook[k].hourBook;
+						listHoursAvailableCopy[i].id = listBook[k].id!;
 						if (hoursNotAvailables > 1) {
 							for (
 								let j = i;
@@ -36,8 +37,9 @@ export const useFilterAvailableHoursAdmin = (
 							) {
 								listHoursAvailableCopy[j].available = false;
 								listHoursAvailableCopy[j].status = 'occupato';
-								listHoursAvailableCopy[j].name = listBook[k].name;
+								listHoursAvailableCopy[j].name = listBook[k].reservarName;
 								listHoursAvailableCopy[j].start = listBook[k].hourBook;
+								listHoursAvailableCopy[j].id = listBook[k].id!;
 							}
 						}
 					}
@@ -48,6 +50,7 @@ export const useFilterAvailableHoursAdmin = (
 		const fromStringToNumber = fromStringToNum(sumHoursNewBook);
 
 		setBookingAvailable(listHoursAvailableCopy);
+
 		setHourBook(fromStringToNumber);
 	}, [newBook, listHoursAvalable, listBook]);
 

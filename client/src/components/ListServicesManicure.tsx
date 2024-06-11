@@ -1,9 +1,8 @@
 import { servicesManicure } from '../utils/constants';
-import { SelectedServices } from '../utils/interfaces';
 
 interface Props {
-	selectedServices: Array<SelectedServices>;
-	setSelectedServices: (arg: Array<SelectedServices>) => void;
+	selectedServices: Array<{ [key: string]: string }>;
+	setSelectedServices: (arg: Array<{ [key: string]: string }>) => void;
 	// handlerSelected: (arg: SelectedServices) => void;
 }
 
@@ -14,7 +13,7 @@ export default function ListServicesManicure({
 	const handlerSelected = (data: {
 		services: string;
 		type: string;
-		time: string;
+		duration: string;
 	}) => {
 		setSelectedServices([...selectedServices, data]);
 	};

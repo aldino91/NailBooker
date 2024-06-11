@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
-import { formatDate } from '../utils/formateDate';
-import { listBookDays, listHoursAvalable } from '../utils/constants';
-import { Booking, ListBook, ModalData, typeNewBook } from '../utils/interfaces';
-import { useFilterAvailableHoursAdmin } from '../hook/HookFilterAvalableHoursAdmin';
+import { listHoursAvalable } from '../utils/constants';
+import {
+	Booking,
+	ListBook,
+	ModalData,
+	ModalDataEdit,
+} from '../utils/interfaces';
 import ModalBookEdit from './ModalBookEdit';
 import ModalBook from './ModalBook';
+import { fromDateToTimeStamp } from '../utils/fromDateToTimeStamp';
+import { filterHoursAvailable } from '../utils/filterHoursAvailable';
 
 interface Props {
-	dateCurrent: string;
+	dateCurrent: Date;
 	listBooks: ListBook[] | undefined;
 }
 
@@ -15,70 +20,56 @@ export default function AvailableHoursAdmin({
 	dateCurrent,
 	listBooks,
 }: Props): JSX.Element {
-	// const localStorage = new LocalStorageHelper();
-	const dayCurrent = formatDate(dateCurrent);
+	const [bookAvalable, setBookAvalable] = useState<ListBook[] | undefined>(
+		undefined
+	);
+
+	const [bookSelected, setBookSelected] = useState<ListBook>();
+
+	const { timeStamp, dayString } = fromDateToTimeStamp(dateCurrent);
 
 	const [showModalBook, setShowModalBook] = useState<ModalData>({
 		open: false,
 		hour: '',
-		day: '',
+		day: 0,
 		status: '',
 		index: 0,
 		name: '',
 		start: '',
+		id: '',
 	});
-	const [showModalEdit, setShowModalEdit] = useState<ModalData>({
-		open: false,
-		hour: '',
-		day: '',
-		status: '',
-		index: 0,
-		name: '',
-		start: '',
-	});
+	const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
 
-	const [getBook, setGetBook] = useState<Array<typeNewBook>>([
-		{ services: '', type: '', time: '', hourBook: '', name: '' },
-	]);
-	// const [selectedHours, setSelectedHours] = useState<Array<Booking>>();
-
-	const [newListBooks, setNewListBooks] = useState<ListBook[] | undefined>(
-		listBooks
-	);
-
-	const { bookingAvailable } = useFilterAvailableHoursAdmin(
-		getBook as typeNewBook[],
-		listHoursAvalable,
-		newListBooks
-	);
-
-	const handlerSelected = (book: Booking, index: number) => {
+	const handlerSelected = (book: ListBook, index: number) => {
 		if (book.status === 'occupato') {
-			setShowModalEdit({
-				open: !showModalEdit.open,
-				hour: book.hourBook,
-				day: dayCurrent,
-				status: book.status,
-				index: index,
-				name: book.name,
-				start: book.start,
-			});
+			setShowModalEdit(!showModalEdit);
+
+			setBookSelected(book);
 		} else {
 			setShowModalBook({
 				open: !showModalBook.open,
 				hour: book.hourBook,
-				day: dayCurrent,
+				day: timeStamp,
 				status: book.status,
 				index: index,
 				start: book.start,
+				id: book.id,
 			});
 		}
 	};
 
 	useEffect(() => {
-		// setSelectedHours(bookingAvailable);
-		setNewListBooks(listBooks);
-	}, [bookingAvailable, listBooks, newListBooks]);
+		const listHoursAvailableCopy: ListBook[] = JSON.parse(
+			JSON.stringify(listHoursAvalable)
+		);
+
+		const listFilterBooks = filterHoursAvailable(
+			listBooks,
+			listHoursAvailableCopy
+		);
+
+		setBookAvalable(listFilterBooks);
+	}, [listBooks, dateCurrent]);
 
 	return (
 		<div className="w-full flex flex-row justify-center px-3">
@@ -88,12 +79,12 @@ export default function AvailableHoursAdmin({
 						<text className=" font-semibold">Orari disponibili: </text>
 					</div>
 					<div>
-						<text className=" font-semibold">{dayCurrent}</text>
+						<text className=" font-semibold">{dayString}</text>
 					</div>
 				</div>
 
 				<div className="grid grid-cols-4 gap-4">
-					{bookingAvailable?.map((book: Booking, i: number) => {
+					{bookAvalable?.map((book: ListBook, i: number) => {
 						return (
 							<button
 								key={i}
@@ -119,25 +110,20 @@ export default function AvailableHoursAdmin({
 				<ModalBook
 					showModal={showModalBook}
 					setShowModal={setShowModalBook}
-					// setSelectedHours={setSelectedHours}
-					// bookingAvailable={selectedHours as Booking[]}
-					newListBooks={newListBooks}
-					setNewListBooks={setNewListBooks}
-					setGetBook={setGetBook}
-					listBooks={listBooks}
-					dateCurrent={dayCurrent}
+					bookAvalable={bookAvalable}
+					setBookAvalable={setBookAvalable}
 				/>
 			)}
 
-			{showModalEdit.open && (
+			{showModalEdit && (
 				<ModalBookEdit
 					showModal={showModalEdit}
 					setShowModal={setShowModalEdit}
-					// setSelectedHours={setSelectedHours}
-					// bookingAvailable={selectedHours as Booking[]}
-					setGetBook={setGetBook}
-					listBooks={listBookDays}
-					dateCurrent={dayCurrent}
+					bookAvalable={bookAvalable}
+					setBookAvalable={setBookAvalable}
+					bookSelected={bookSelected as ListBook}
+					setBookSelected={setBookSelected}
+					dayCurrent={dateCurrent}
 				/>
 			)}
 		</div>

@@ -2,54 +2,78 @@ import { useEffect, useState } from 'react';
 import BaseLayout from '../components/BaseLayout';
 import FormCalendar from '../components/FormCalendar';
 import HeaderBar from '../components/HeaderBar';
-import {
-	bgColorDefault,
-	bgColorDisable,
-	listBookDays,
-} from '../utils/constants';
+import { bgColorDefault, bgColorDisable } from '../utils/constants';
 import AvailableHoursAdmin from '../components/AvailableHoursAdmin';
-import { formatDate } from '../utils/formateDate';
 import { ListBook } from '../utils/interfaces';
 import { fecthRangeDateBooks } from '../api/fetchRangeDateBooks';
+import { dateFromTo } from '../utils/dateFromTo';
+import { setDateStartCalendar } from '../utils/setDateStartCalendar';
+import { getWeek } from 'date-fns';
 
 export default function DashboardAdmin(): JSX.Element {
-	const [startDate, setStartDate] = useState<Date | string>(new Date());
+	const [changeDayFilter, setChangeDayFilter] = useState(false);
+
+	const [startDate, setStartDate] = useState<Date>(new Date());
+
+	const [weekCurrent, setWeekCurrent] = useState(0);
+
+	const [dateSelected, setDateSelected] = useState<Date>(new Date());
 
 	const [bookSelected, setBookSelected] = useState(true);
 
+	const [listBookDays, setListBookDays] = useState<ListBook[]>();
+
 	const [listBooks, setListBooks] = useState<ListBook[] | undefined>();
 
-	const dayCurrent = formatDate(startDate as string);
-
 	useEffect(() => {
-		const bookForDayCurrent = listBookDays.find(
-			(date) => date.day === dayCurrent
-		);
-		if (bookForDayCurrent) {
-			const listBookDayCurrent = bookForDayCurrent.book;
-			setListBooks(listBookDayCurrent);
-		} else {
-			setListBooks(undefined);
-		}
-	}, [startDate, listBooks, dayCurrent]);
-
-	useEffect(() => {
-		fecthRangeDateBooks('03/06/2024', '06/06/2024')
-			.then((resp) => {
-				console.log(resp?.data);
-			})
-			.catch((err) => {
+		const { dateFrom, dateTo, dateCurrent } = dateFromTo(startDate as Date);
+		const checkDay = new Date(startDate);
+		const checkWeek = getWeek(checkDay);
+		setWeekCurrent(checkWeek);
+		const fetchBooks = async () => {
+			try {
+				const resp = await fecthRangeDateBooks(dateFrom, dateTo);
+				setListBookDays(resp?.data);
+				setDateSelected(startDate);
+				const bookForDayCurrent = resp?.data.filter(
+					(date: ListBook) => date.dayBook === dateCurrent
+				);
+				setListBooks(bookForDayCurrent);
+				setChangeDayFilter(!changeDayFilter);
+			} catch (err) {
 				console.log(err);
-			});
-	}, []);
+			}
+		};
+
+		fetchBooks();
+	}, [weekCurrent]);
+
+	useEffect(() => {
+		const { dateCurrent } = dateFromTo(dateSelected as Date);
+
+		if (listBookDays) {
+			const bookForDayCurrent = listBookDays.filter(
+				(date) => date.dayBook === dateCurrent
+			);
+			setListBooks(bookForDayCurrent);
+		}
+	}, [changeDayFilter]);
 
 	return (
 		<BaseLayout>
 			<HeaderBar title="Dashboard Admin" href="" />
 			<div className="flex flex-col space-y-5 mb-6">
-				<FormCalendar startDate={startDate} setStartDate={setStartDate} />
+				<FormCalendar
+					startDate={startDate as Date}
+					setStartDate={setStartDate}
+					changeDayFilter={changeDayFilter}
+					setChangeDayFilter={setChangeDayFilter}
+					setDateSelected={setDateSelected}
+					weekCurrent={weekCurrent}
+					setWeekCurrent={setWeekCurrent}
+				/>
 				<AvailableHoursAdmin
-					dateCurrent={startDate as string}
+					dateCurrent={setDateStartCalendar(startDate as Date)}
 					listBooks={listBooks}
 				/>
 				<div className="w-full flex flex-row justify-center px-3">

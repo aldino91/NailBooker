@@ -4,7 +4,7 @@ export class UpdateDto {
 	private constructor(
 		public readonly id: string,
 		public readonly reservarName: string,
-		public readonly dayBook: string,
+		public readonly dayBook: number,
 		public readonly hourBook: string,
 		public readonly services: string[],
 		public readonly duration: string,

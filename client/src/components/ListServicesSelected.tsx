@@ -1,8 +1,8 @@
-import { SelectedServices } from '../utils/interfaces';
+import { useEffect } from 'react';
 
 interface Props {
-	selectedServices: Array<SelectedServices>;
-	setSelectedServices: (arg: Array<SelectedServices>) => void;
+	selectedServices: Array<any>;
+	setSelectedServices: (arg: Array<any>) => void;
 }
 
 export default function ListServicesSelected({
@@ -19,6 +19,7 @@ export default function ListServicesSelected({
 		selectedServices.splice(indexElement, 1);
 		setSelectedServices([...selectedServices]);
 	};
+
 	return (
 		<div className="w-full flex flex-wrap">
 			{selectedServices?.map((service, i) => {

@@ -1,5 +1,5 @@
 export default class LocalStorageHelper<T> {
-	save(data: T, storageKey: string) {
+	save(storageKey: string, data: T) {
 		const jsonData = JSON.stringify(data);
 		localStorage.setItem(storageKey, jsonData);
 	}
