@@ -19,6 +19,8 @@ interface Props {
 	setShowModal: (arg: ModalData) => void;
 	bookAvalable: ListBook[] | undefined;
 	setBookAvalable: (arg: ListBook[]) => void;
+	refreshGet: boolean;
+	setRefreshGet: (arg: boolean) => void;
 }
 
 export default function ModalBook({
@@ -26,6 +28,8 @@ export default function ModalBook({
 	setShowModal,
 	bookAvalable,
 	setBookAvalable,
+	refreshGet,
+	setRefreshGet,
 }: Props): JSX.Element {
 	const localStorageId = new LocalStorageHelper<string>();
 	const [services, setServices] = useState<string>('Manicure');
@@ -85,7 +89,7 @@ export default function ModalBook({
 				selectedServices,
 			});
 			setBookAvalable([...addBooking!]);
-
+			setRefreshGet(!refreshGet);
 			setLoading(false);
 			setShowModal({ open: !showModal.open });
 		} catch (error) {

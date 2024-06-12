@@ -4,14 +4,16 @@ interface Props {
 	showEditBook: boolean;
 	handlerSave: () => void;
 	handlerDelete: () => void;
-	showLoading: boolean;
+	showLoadingDelete: boolean;
+	showLoadingUpdate: boolean;
 }
 
 export default function ButtonFooterModalEdit({
 	showEditBook,
 	handlerSave,
 	handlerDelete,
-	showLoading,
+	showLoadingDelete,
+	showLoadingUpdate,
 }: Props): JSX.Element {
 	return (
 		<div className="flex flex-row justify-between w-full px-2 py-4 rounded-b order-last">
@@ -20,7 +22,7 @@ export default function ButtonFooterModalEdit({
 				type="button"
 				onClick={() => handlerDelete()}
 			>
-				{showLoading === true ? <LoadingSpinner /> : 'Elimina'}
+				{showLoadingDelete === true ? <LoadingSpinner /> : 'Elimina'}
 			</button>
 			{showEditBook === true && (
 				<button
@@ -28,7 +30,7 @@ export default function ButtonFooterModalEdit({
 					type="button"
 					onClick={() => handlerSave()}
 				>
-					Salva
+					{showLoadingUpdate === true ? <LoadingSpinner /> : 'Salva'}
 				</button>
 			)}
 		</div>

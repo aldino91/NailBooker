@@ -15,6 +15,9 @@ import { dateFromTo } from '../utils/dateFromTo';
 import { fecthRangeDateBooks } from '../api/fetchRangeDateBooks';
 import { searchServicesForEdit } from '../utils/searchServicesForEdit';
 import AvailableHoursEdit from './AvailableHoursEdit';
+import { arrayServices } from '../utils/arrayServices';
+import { fromDateToTimeStamp } from '../utils/fromDateToTimeStamp';
+import { DataUpdate, fetchUpdateBook } from '../api/fetchUpdateBook';
 
 interface Props {
 	showModal: boolean;
@@ -22,8 +25,14 @@ interface Props {
 	bookAvalable: ListBook[] | undefined;
 	setBookAvalable: (arg: ListBook[]) => void;
 	bookSelected: ListBook;
-	setBookSelected: (arg: ListBook) => void;
 	dayCurrent: Date;
+	refreshGet: boolean;
+	setRefreshGet: (arg: boolean) => void;
+}
+
+export interface DataEditBook {
+	duration: string;
+	hourBook: string;
 }
 
 export default function ModalBookEdit({
@@ -32,14 +41,19 @@ export default function ModalBookEdit({
 	bookAvalable,
 	setBookAvalable,
 	bookSelected,
-	setBookSelected,
 	dayCurrent,
+	refreshGet,
+	setRefreshGet,
 }: Props): JSX.Element {
 	const [showEditBook, setShowEditBook] = useState(false);
-	const [showLoading, setShowLoading] = useState(false);
+	const [showLoadingDelete, setShowLoadingDelete] = useState(false);
+	const [showLoadingUpdate, setShowLoadingUpdate] = useState(false);
 	const [startDate, setStartDate] = useState<Date>(dayCurrent);
 	const [services, setServices] = useState<string>('Manicure');
 	const [changeDayFilter, setChangeDayFilter] = useState(false);
+
+	const [editBookData, setEditBookData] = useState<DataEditBook>();
+
 	const [selectedServices, setSelectedServices] = useState<
 		Array<{ [key: string]: string }>
 	>(searchServicesForEdit(bookSelected.services));
@@ -49,7 +63,7 @@ export default function ModalBookEdit({
 	const [listBooks, setListBooks] = useState<ListBook[]>();
 
 	const [formData, setFormData] = useState({
-		name: '',
+		name: bookSelected.reservarName,
 	});
 	const [weekCurrent, setWeekCurrent] = useState(0);
 
@@ -57,7 +71,7 @@ export default function ModalBookEdit({
 
 	const handlerDelete = async () => {
 		try {
-			setShowLoading(true);
+			setShowLoadingDelete(true);
 			await fetchDeleteBook(bookSelected?.id!);
 			if (bookAvalable !== undefined) {
 				for (let i = 0; i < bookAvalable.length; i++) {
@@ -76,15 +90,16 @@ export default function ModalBookEdit({
 					}
 				}
 				setBookAvalable([...bookAvalable]);
-				setShowLoading(false);
+				setShowLoadingDelete(false);
+				setRefreshGet(!refreshGet);
 				setShowModal(!showModal);
 			} else {
-				setShowLoading(false);
+				setShowLoadingDelete(false);
 				setShowModal(!showModal);
 			}
 		} catch (error) {
 			console.log('ERROR FETCH: ', error);
-			setShowLoading(false);
+			setShowLoadingDelete(false);
 			setShowModal(!showModal);
 		}
 	};
@@ -97,11 +112,30 @@ export default function ModalBookEdit({
 		});
 	};
 
-	const handlerSave = () => {
-		console.log('bookSelected: ', bookSelected);
-		console.log('dateSelected: ', dateSelected);
-		console.log('selectedServices: ', selectedServices);
-		console.log('formData: ', formData.name);
+	const handlerSave = async () => {
+		const { timeStamp } = fromDateToTimeStamp(
+			new Date(dateSelected.toISOString())
+		);
+		const dataEdit: DataUpdate = {
+			id: bookSelected?.id as string,
+			dayBook: timeStamp,
+			hourBook: editBookData?.hourBook as string,
+			reservarName: formData.name,
+			duration: editBookData?.duration as string,
+			services: arrayServices(selectedServices),
+		};
+		try {
+			setShowLoadingUpdate(true);
+			const resp = await fetchUpdateBook(dataEdit);
+			setShowLoadingUpdate(false);
+			setRefreshGet(!refreshGet);
+			setShowModal(!showModal);
+			return resp?.data;
+		} catch (error) {
+			setShowLoadingUpdate(false);
+			setShowModal(!showModal);
+			console.log('Error Update: ', error);
+		}
 	};
 
 	useEffect(() => {
@@ -216,6 +250,7 @@ export default function ModalBookEdit({
 									listBooks={listBooks}
 									bookSelected={bookSelected}
 									selectedServices={selectedServices}
+									setEditBookData={setEditBookData}
 								/>
 							</div>
 							<form className="w-full px-2">
@@ -241,7 +276,8 @@ export default function ModalBookEdit({
 							handlerSave={handlerSave}
 							handlerDelete={handlerDelete}
 							showEditBook={showEditBook}
-							showLoading={showLoading}
+							showLoadingDelete={showLoadingDelete}
+							showLoadingUpdate={showLoadingUpdate}
 						/>
 					</div>
 				</div>

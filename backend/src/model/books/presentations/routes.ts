@@ -30,7 +30,9 @@ export class BooksRoutes {
 
 		router.delete('/book-delete/:id', controller.deleteById);
 
-		router.put('/book-update', authenticateToken, controller.updated);
+		// router.put('/book-update', authenticateToken, controller.updated);
+
+		router.put('/book-update', controller.updated);
 
 		router.use(errorHandler);
 

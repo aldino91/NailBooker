@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import BaseLayout from '../components/BaseLayout';
 import FormCalendar from '../components/FormCalendar';
 import HeaderBar from '../components/HeaderBar';
-import { bgColorDefault, bgColorDisable } from '../utils/constants';
 import AvailableHoursAdmin from '../components/AvailableHoursAdmin';
 import { ListBook } from '../utils/interfaces';
 import { fecthRangeDateBooks } from '../api/fetchRangeDateBooks';
@@ -19,11 +18,11 @@ export default function DashboardAdmin(): JSX.Element {
 
 	const [dateSelected, setDateSelected] = useState<Date>(new Date());
 
-	const [bookSelected, setBookSelected] = useState(true);
-
 	const [listBookDays, setListBookDays] = useState<ListBook[]>();
 
 	const [listBooks, setListBooks] = useState<ListBook[] | undefined>();
+
+	const [refreshGet, setRefreshGet] = useState(false);
 
 	useEffect(() => {
 		const { dateFrom, dateTo, dateCurrent } = dateFromTo(startDate as Date);
@@ -46,7 +45,8 @@ export default function DashboardAdmin(): JSX.Element {
 		};
 
 		fetchBooks();
-	}, [weekCurrent]);
+		console.log('refreshGet!!!');
+	}, [weekCurrent, refreshGet]);
 
 	useEffect(() => {
 		const { dateCurrent } = dateFromTo(dateSelected as Date);
@@ -75,8 +75,10 @@ export default function DashboardAdmin(): JSX.Element {
 				<AvailableHoursAdmin
 					dateCurrent={setDateStartCalendar(startDate as Date)}
 					listBooks={listBooks}
+					refreshGet={refreshGet}
+					setRefreshGet={setRefreshGet}
 				/>
-				<div className="w-full flex flex-row justify-center px-3">
+				{/* <div className="w-full flex flex-row justify-center px-3">
 					<button
 						className={`w-full p-2 rounded-3xl ${
 							bookSelected ? bgColorDisable : bgColorDefault
@@ -86,7 +88,7 @@ export default function DashboardAdmin(): JSX.Element {
 					>
 						Conferma
 					</button>
-				</div>
+				</div> */}
 			</div>
 		</BaseLayout>
 	);

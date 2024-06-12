@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react';
 import { listHoursAvalable } from '../utils/constants';
-import {
-	Booking,
-	ListBook,
-	ModalData,
-	ModalDataEdit,
-} from '../utils/interfaces';
+import { ListBook, ModalData } from '../utils/interfaces';
 import ModalBookEdit from './ModalBookEdit';
 import ModalBook from './ModalBook';
 import { fromDateToTimeStamp } from '../utils/fromDateToTimeStamp';
@@ -14,11 +9,15 @@ import { filterHoursAvailable } from '../utils/filterHoursAvailable';
 interface Props {
 	dateCurrent: Date;
 	listBooks: ListBook[] | undefined;
+	refreshGet: boolean;
+	setRefreshGet: (arg: boolean) => void;
 }
 
 export default function AvailableHoursAdmin({
 	dateCurrent,
 	listBooks,
+	refreshGet,
+	setRefreshGet,
 }: Props): JSX.Element {
 	const [bookAvalable, setBookAvalable] = useState<ListBook[] | undefined>(
 		undefined
@@ -112,6 +111,8 @@ export default function AvailableHoursAdmin({
 					setShowModal={setShowModalBook}
 					bookAvalable={bookAvalable}
 					setBookAvalable={setBookAvalable}
+					refreshGet={refreshGet}
+					setRefreshGet={setRefreshGet}
 				/>
 			)}
 
@@ -122,8 +123,9 @@ export default function AvailableHoursAdmin({
 					bookAvalable={bookAvalable}
 					setBookAvalable={setBookAvalable}
 					bookSelected={bookSelected as ListBook}
-					setBookSelected={setBookSelected}
 					dayCurrent={dateCurrent}
+					refreshGet={refreshGet}
+					setRefreshGet={setRefreshGet}
 				/>
 			)}
 		</div>
