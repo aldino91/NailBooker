@@ -6,14 +6,15 @@ import { filterHoursAvailable } from '../utils/filterHoursAvailable';
 import { sumHours } from '../utils/sumHours';
 import { arrayServices } from '../utils/arrayServices';
 import { fromStringToNum } from '../utils/fromStringToNum';
-import { set } from 'date-fns';
 import { controlDisableButton } from '../utils/controlDisableButton';
+import { DataEditBook } from './ModalBookEdit';
 
 interface Props {
 	dateCurrent: Date;
 	listBooks: ListBook[] | undefined;
 	bookSelected: ListBook;
 	selectedServices: Array<{ [key: string]: string }>;
+	setEditBookData: (data: DataEditBook) => void;
 }
 
 export default function AvailableHoursEdit({
@@ -21,6 +22,7 @@ export default function AvailableHoursEdit({
 	listBooks,
 	bookSelected,
 	selectedServices,
+	setEditBookData,
 }: Props): JSX.Element {
 	const [bookAvalable, setBookAvalable] = useState<ListBook[] | undefined>(
 		undefined
@@ -70,8 +72,9 @@ export default function AvailableHoursEdit({
 
 			if (book.status === 'disponible') {
 				setDisableButton(!disableButton);
+				const sumDuration = sumHours(selectedServices);
+				setEditBookData({ duration: sumDuration, hourBook: book.hourBook });
 				for (let i = 0; i < bookAvalable?.length; i++) {
-					const sumDuration = sumHours(selectedServices);
 					const durationBook = fromStringToNum(sumDuration);
 					if (bookAvalable[i].hourBook === book.hourBook) {
 						bookAvalable[i] = {
@@ -115,10 +118,10 @@ export default function AvailableHoursEdit({
 			<div className="w-full rounded-3xl box-shadow px-3 flex flex-col space-y-3 py-3">
 				<div className="w-full flex flex-row space-x-3">
 					<div>
-						<text className=" font-semibold">Orari disponibili: </text>
+						<text className="font-semibold">Orari disponibili: </text>
 					</div>
 					<div>
-						<text className=" font-semibold">{dayString}</text>
+						<text className="font-semibold">{dayString}</text>
 					</div>
 				</div>
 
@@ -129,8 +132,8 @@ export default function AvailableHoursEdit({
 								key={i}
 								disabled={controlDisableButton(disableButton, book.status)}
 								className={`border border-gray-200 rounded-3xl py-2 px-2 box-shadow mr-2 text-center cursor-pointer ${
-									book.start === bookSelected.start
-										? 'bg-red-500 text-white'
+									book.id === bookSelected.id
+										? 'bg-green-400 text-white'
 										: book.status === 'occupato'
 										? 'bg-gray-400 text-white'
 										: book.status === 'selected'

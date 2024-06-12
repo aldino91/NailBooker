@@ -49,21 +49,21 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 				},
 			});
 
-			const date = dateFromTimeStamp(book.dayBook);
+			// const date = dateFromTimeStamp(book.dayBook);
 
-			if (book) {
-				const sent = await sendEmailBooking(
-					this.emailService,
-					user.email,
-					date,
-					book.hourBook
-				);
+			// if (book) {
+			// 	const sent = await sendEmailBooking(
+			// 		this.emailService,
+			// 		user.email,
+			// 		date,
+			// 		book.hourBook
+			// 	);
 
-				if (sent === false)
-					return {
-						err: new ErrorBookingBase('Error sending confirmation email'),
-					};
-			}
+			// 	if (sent === false)
+			// 		return {
+			// 			err: new ErrorBookingBase('Error sending confirmation email'),
+			// 		};
+			// }
 
 			return { err: undefined, data: book };
 		} catch (error) {
@@ -148,11 +148,12 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 			});
 
 			return { err: undefined, data: updateBook };
-		} catch (error) {}
-		return {
-			err: new ErrorBookingBase('Method not implemented.'),
-			data: undefined,
-		};
+		} catch (error) {
+			return {
+				err: new ErrorBookingBase('Error for edit book!...'),
+				data: undefined,
+			};
+		}
 	}
 	async deleteBook(
 		id: string
