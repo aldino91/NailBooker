@@ -2,32 +2,26 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import { getWeek } from 'date-fns';
 import { it } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
-import { setDateStartCalendar } from '../utils/setDateStartCalendar';
+import { setDateStartCalendar } from '../../utils/setDateStartCalendar';
+import { useReservationStore } from '../../infrastructure/store/reservationsStore';
 
 registerLocale('it', it);
 
 interface Props {
 	startDate: Date;
 	setStartDate: (date: Date) => void;
-	changeDayFilter: boolean;
-	setChangeDayFilter: (arg: boolean) => void;
-	setDateSelected: (date: Date) => void;
 	weekCurrent: number;
-	setWeekCurrent: (week: number) => void;
 }
 
 export default function FormCalendar({
 	startDate,
 	setStartDate,
-	changeDayFilter,
-	setChangeDayFilter,
-	setDateSelected,
 	weekCurrent,
-	setWeekCurrent,
 }: Props): JSX.Element {
+	const { filterBooksByDate } = useReservationStore();
+
 	const handlerDateSelected = (date: Date) => {
-		setDateSelected(date);
-		// setChangeDayFilter(!changeDayFilter);
+		useReservationStore.setState({ dateSelected: date });
 	};
 
 	const isWeekday = (date: Date): boolean => {
@@ -40,16 +34,14 @@ export default function FormCalendar({
 
 		const checkWeek = getWeek(checkDay);
 
-		setDateSelected(date as Date);
+		console.log('checkWeek: ', checkWeek, 'weekCurrent: ', weekCurrent);
 
 		if (checkWeek !== weekCurrent) {
 			setStartDate(date);
-			setWeekCurrent(checkWeek);
-			setChangeDayFilter(!changeDayFilter);
+			useReservationStore.setState({ weekCurrent: checkWeek });
 		} else {
 			setStartDate(date);
-			setWeekCurrent(checkWeek);
-			setChangeDayFilter(!changeDayFilter);
+			filterBooksByDate(date);
 		}
 	};
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { bgColorDefault } from '../utils/constants';
+import { bgColorDefault } from '../../utils/constants';
 
 interface Props {
 	href?: string;

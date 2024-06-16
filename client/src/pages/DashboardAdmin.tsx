@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import BaseLayout from '../components/BaseLayout';
+import BaseLayout from '../presentation/components/BaseLayout';
 import FormCalendar from '../components/FormCalendar';
 import HeaderBar from '../components/HeaderBar';
 import AvailableHoursAdmin from '../components/AvailableHoursAdmin';

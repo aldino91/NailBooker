@@ -13,14 +13,15 @@ import LocalStorageHelper from '../utils/localStorage';
 import LoadingSpinner from './LoadingSpinner';
 import { sumListServices } from '../utils/sumListServices';
 import { createdBooking } from '../utils/createdBooking';
+import { Books } from '../domain/entities/Books';
 
 interface Props {
 	showModal: ModalData;
 	setShowModal: (arg: ModalData) => void;
-	bookAvalable: ListBook[] | undefined;
-	setBookAvalable: (arg: ListBook[]) => void;
-	refreshGet: boolean;
-	setRefreshGet: (arg: boolean) => void;
+	bookAvalable: Books[] | undefined;
+	setBookAvalable: (arg: Books[]) => void;
+	// refreshGet: boolean;
+	// setRefreshGet: (arg: boolean) => void;
 }
 
 export default function ModalBook({
@@ -28,9 +29,9 @@ export default function ModalBook({
 	setShowModal,
 	bookAvalable,
 	setBookAvalable,
-	refreshGet,
-	setRefreshGet,
-}: Props): JSX.Element {
+}: // refreshGet,
+// setRefreshGet,
+Props): JSX.Element {
 	const localStorageId = new LocalStorageHelper<string>();
 	const [services, setServices] = useState<string>('Manicure');
 	const [selectedServices, setSelectedServices] = useState<
@@ -79,7 +80,7 @@ export default function ModalBook({
 				time: '00:00',
 				id: id,
 			};
-			const addBooking: ListBook[] = await createdBooking({
+			const addBooking: Books[] = await createdBooking({
 				dataAddList,
 				bookAvalable,
 				showModal,
@@ -89,7 +90,7 @@ export default function ModalBook({
 				selectedServices,
 			});
 			setBookAvalable([...addBooking!]);
-			setRefreshGet(!refreshGet);
+
 			setLoading(false);
 			setShowModal({ open: !showModal.open });
 		} catch (error) {

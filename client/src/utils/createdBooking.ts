@@ -1,10 +1,11 @@
+import { Books } from '../domain/entities/Books';
 import { fromStringToNum } from './fromStringToNum';
 import { ListBook, ModalData } from './interfaces';
 import { sumHours } from './sumHours';
 import { sumListServices } from './sumListServices';
 
 interface Props {
-	bookAvalable: ListBook[] | undefined;
+	bookAvalable: Books[] | undefined;
 	showModal: ModalData;
 	dataAddList: any;
 	id: string;
@@ -21,7 +22,7 @@ export const createdBooking = ({
 	name,
 	usersId,
 	selectedServices,
-}: Props): ListBook[] => {
+}: Props): Books[] => {
 	if (bookAvalable) {
 		for (let i = 0; i < bookAvalable.length; i++) {
 			if (bookAvalable[i].hourBook === showModal.hour) {
@@ -47,5 +48,5 @@ export const createdBooking = ({
 		}
 	}
 
-	return bookAvalable as ListBook[];
+	return bookAvalable as Books[];
 };

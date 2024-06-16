@@ -1,29 +1,28 @@
 import { useEffect, useState } from 'react';
-import { listHoursAvalable } from '../utils/constants';
-import { ListBook, ModalData } from '../utils/interfaces';
-import ModalBookEdit from './ModalBookEdit';
-import ModalBook from './ModalBook';
-import { fromDateToTimeStamp } from '../utils/fromDateToTimeStamp';
-import { filterHoursAvailable } from '../utils/filterHoursAvailable';
+import { Books } from '../../domain/entities/Books';
+import { ModalData } from '../../utils/interfaces';
+import { fromDateToTimeStamp } from '../../utils/fromDateToTimeStamp';
+import ModalBook from '../../components/ModalBook';
+import ModalBookEdit from '../../components/ModalBookEdit';
+
+import { useReservationStore } from '../../infrastructure/store/reservationsStore';
 
 interface Props {
 	dateCurrent: Date;
-	listBooks: ListBook[] | undefined;
-	refreshGet: boolean;
-	setRefreshGet: (arg: boolean) => void;
+	dateSelected: Date;
 }
 
 export default function AvailableHoursAdmin({
 	dateCurrent,
-	listBooks,
-	refreshGet,
-	setRefreshGet,
+	dateSelected,
 }: Props): JSX.Element {
-	const [bookAvalable, setBookAvalable] = useState<ListBook[] | undefined>(
+	const { listBookDays, filterBooksByDate } = useReservationStore();
+
+	const [bookAvalable, setBookAvalable] = useState<Books[] | undefined>(
 		undefined
 	);
 
-	const [bookSelected, setBookSelected] = useState<ListBook>();
+	const [bookSelected, setBookSelected] = useState<Books>();
 
 	const { timeStamp, dayString } = fromDateToTimeStamp(dateCurrent);
 
@@ -39,7 +38,7 @@ export default function AvailableHoursAdmin({
 	});
 	const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
 
-	const handlerSelected = (book: ListBook, index: number) => {
+	const handlerSelected = (book: Books, index: number) => {
 		if (book.status === 'occupato') {
 			setShowModalEdit(!showModalEdit);
 
@@ -58,17 +57,8 @@ export default function AvailableHoursAdmin({
 	};
 
 	useEffect(() => {
-		const listHoursAvailableCopy: ListBook[] = JSON.parse(
-			JSON.stringify(listHoursAvalable)
-		);
-
-		const listFilterBooks = filterHoursAvailable(
-			listBooks,
-			listHoursAvailableCopy
-		);
-
-		setBookAvalable(listFilterBooks);
-	}, [listBooks, dateCurrent]);
+		filterBooksByDate(dateSelected);
+	}, [dateSelected]);
 
 	return (
 		<div className="w-full flex flex-row justify-center px-3">
@@ -83,7 +73,7 @@ export default function AvailableHoursAdmin({
 				</div>
 
 				<div className="grid grid-cols-4 gap-4">
-					{bookAvalable?.map((book: ListBook, i: number) => {
+					{listBookDays?.map((book: Books, i: number) => {
 						return (
 							<button
 								key={i}
@@ -111,8 +101,6 @@ export default function AvailableHoursAdmin({
 					setShowModal={setShowModalBook}
 					bookAvalable={bookAvalable}
 					setBookAvalable={setBookAvalable}
-					refreshGet={refreshGet}
-					setRefreshGet={setRefreshGet}
 				/>
 			)}
 
@@ -120,12 +108,7 @@ export default function AvailableHoursAdmin({
 				<ModalBookEdit
 					showModal={showModalEdit}
 					setShowModal={setShowModalEdit}
-					bookAvalable={bookAvalable}
-					setBookAvalable={setBookAvalable}
-					bookSelected={bookSelected as ListBook}
 					dayCurrent={dateCurrent}
-					refreshGet={refreshGet}
-					setRefreshGet={setRefreshGet}
 				/>
 			)}
 		</div>

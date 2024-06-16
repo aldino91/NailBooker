@@ -6,7 +6,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Reserved from './pages/Reserved';
 import Calendar from './pages/Calendar';
-import DashboardAdmin from './pages/DashboardAdmin';
+import DashboardAdmin from './presentation/views/DashboardAdmin';
 
 function App() {
 	return (

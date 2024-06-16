@@ -1,6 +1,6 @@
-import BaseLayout from '../components/BaseLayout';
+import BaseLayout from '../presentation/components/BaseLayout';
 import FormRegister from '../components/FormRegister';
-import HeaderBar from '../components/HeaderBar';
+import HeaderBar from '../presentation/components/HeaderBar';
 
 export default function Register(): JSX.Element {
 	return (

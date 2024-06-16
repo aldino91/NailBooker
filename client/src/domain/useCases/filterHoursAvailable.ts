@@ -1,10 +1,10 @@
-import { fromStringToNum } from './fromStringToNum';
-import { ListBook } from './interfaces';
+import { fromStringToNum } from '../../utils/fromStringToNum';
+import { Books } from '../entities/Books';
 
 export const filterHoursAvailable = (
-	listBooks: ListBook[] | undefined,
-	listHoursAvailableCopy: ListBook[]
-): ListBook[] => {
+	listBooks: Books[] | undefined,
+	listHoursAvailableCopy: Books[]
+): Books[] => {
 	if (!listBooks) return listHoursAvailableCopy;
 
 	listBooks.forEach((book) => {
@@ -28,6 +28,8 @@ export const filterHoursAvailable = (
 			}
 		}
 	});
+
+	console.log('listHoursAvailableCopy: ', listHoursAvailableCopy);
 
 	return listHoursAvailableCopy;
 };
