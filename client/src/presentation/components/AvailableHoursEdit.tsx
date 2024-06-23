@@ -2,10 +2,13 @@ import { useEffect } from 'react';
 import { Books } from '../../domain/entities/Books';
 import { fromDateToTimeStamp } from '../../utils/fromDateToTimeStamp';
 import { useReservationStore } from '../../infrastructure/store/reservationsStore';
-
+import { ToastContainer } from 'react-toastify';
 import { DataUpdate } from '../../api/fetchUpdateBook';
 import { fromStringToNum } from '../../utils/fromStringToNum';
 import { conditionChangeListDaysBooks } from '../../utils/conditionChangeListDaysBooks';
+import useToast from '../../hook/HookToast';
+import 'react-toastify/dist/ReactToastify.css';
+import { styleToast } from '../../utils/constants';
 
 interface Props {
 	dateCurrent: Date;
@@ -26,6 +29,8 @@ export default function AvailableHoursEdit({
 		updateListBookDays,
 	} = useReservationStore();
 
+	const { notify } = useToast();
+
 	const { dayString } = fromDateToTimeStamp(dateCurrent);
 
 	const handlerSelected = (book: Books, index: number) => {
@@ -41,9 +46,16 @@ export default function AvailableHoursEdit({
 
 			if (condicion) {
 				updateListBookDays(dataUpdate, book.hourBook);
-				console.log('Si puo aggiornare');
+				notify('Prenotazione aggiornata correttamente...', 'success');
 			} else {
-				console.log('Non si puo aggiornare');
+				if (book.id !== bookSelected.id && book.status === 'occupato') {
+					notify('Orario non disponibile...', 'warn');
+				} else {
+					notify(
+						'In questo orario non basta il tempo per i servizzi scelti...',
+						'warn'
+					);
+				}
 			}
 		}
 	};
@@ -84,6 +96,13 @@ export default function AvailableHoursEdit({
 					})}
 				</div>
 			</div>
+			<ToastContainer
+				autoClose={9000}
+				closeButton={true}
+				position="top-right"
+				style={styleToast}
+				progressClassName={'progress'}
+			/>
 		</div>
 	);
 }

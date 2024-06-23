@@ -292,3 +292,31 @@
   height: 100%;
   overflow: scroll;
 }
+
+/*    TOAST   */
+
+
+.toast-success {
+
+  border: solid rgb(16 185 129) 2px;
+  border-radius: 8px !important;
+
+}
+
+.toast-error {
+
+  border: solid rgb(220 38 38) 2px;
+  border-radius: 8px !important;
+}
+
+.toast-info {
+
+  border: solid rgb(49, 49, 241) 2px;
+  border-radius: 8px !important;
+}
+
+.toast-warn {
+
+  border: solid rgb(234 179 8) 2px;
+  border-radius: 8px !important;
+}
