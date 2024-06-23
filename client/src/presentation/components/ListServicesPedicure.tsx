@@ -1,12 +1,11 @@
-import { servicesManicure } from '../utils/constants';
+import { servicesPedicure } from '../../utils/constants';
 
 interface Props {
 	selectedServices: Array<{ [key: string]: string }>;
 	setSelectedServices: (arg: Array<{ [key: string]: string }>) => void;
-	// handlerSelected: (arg: SelectedServices) => void;
 }
 
-export default function ListServicesManicure({
+export default function ListServicesPedicure({
 	selectedServices,
 	setSelectedServices,
 }: Props): JSX.Element {
@@ -17,10 +16,9 @@ export default function ListServicesManicure({
 	}) => {
 		setSelectedServices([...selectedServices, data]);
 	};
-
 	return (
 		<div className="w-full flex flex-wrap">
-			{servicesManicure.map((nailService, i) => {
+			{servicesPedicure.map((nailService, i) => {
 				return (
 					<button
 						key={i}
@@ -29,9 +27,9 @@ export default function ListServicesManicure({
 								? true
 								: false
 						}
-						className={`cursor-pointer border-2 border-indigo-200 rounded-3xl p-1 m-1 ${
+						className={`cursor-pointer border-2 border-rose-200 rounded-3xl p-1 m-1 ${
 							selectedServices.find((data) => data === nailService)
-								? 'bg-indigo-400 text-white'
+								? 'bg-rose-400 text-white'
 								: 'bg-white text-black'
 						}`}
 						onClick={() => {

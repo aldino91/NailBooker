@@ -1,4 +1,4 @@
-import BaseLayout from '../presentation/components/BaseLayout';
+import BaseLayout from '../components/BaseLayout';
 
 export default function Booking(): JSX.Element {
 	return (

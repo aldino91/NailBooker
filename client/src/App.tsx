@@ -1,12 +1,12 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import { Home } from './pages/Home';
-import Booking from './pages/Booking';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Reserved from './pages/Reserved';
-import Calendar from './pages/Calendar';
 import DashboardAdmin from './presentation/views/DashboardAdmin';
+import { Home } from './presentation/pages/Home';
+import Booking from './presentation/pages/Booking';
+import Register from './presentation/pages/Register';
+import Login from './presentation/pages/Login';
+import Reserved from './presentation/pages/Reserved';
+import Calendar from './presentation/pages/Calendar';
 
 function App() {
 	return (

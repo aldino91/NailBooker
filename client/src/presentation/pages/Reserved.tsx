@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
-import BaseLayout from '../presentation/components/BaseLayout';
-
 import { useNavigate } from 'react-router-dom';
-import { bgColorDefault, bgColorDisable } from '../utils/constants';
-import LocalStorageHelper from '../utils/localStorage';
-import { sumHours } from '../utils/sumHours';
-import { fecthAuthorized } from '../api/fetchAuthorized';
-import SegmentService from '../components/SegmentService';
 import ListServicesManicure from '../components/ListServicesManicure';
 import ListServicesPedicure from '../components/ListServicesPedicure';
-import { handlerSelected } from '../utils/handlerSelectedServices';
-import { handlerDeleted } from '../utils/handlerDeletedServices';
-import HeaderBar from '../presentation/components/HeaderBar';
+import LocalStorageHelper from '../../utils/localStorage';
+import { fecthAuthorized } from '../../api/fetchAuthorized';
+import BaseLayout from '../components/BaseLayout';
+import HeaderBar from '../components/HeaderBar';
+import SegmentService from '../../components/SegmentService';
+import { handlerDeleted } from '../../utils/handlerDeletedServices';
+import { sumHours } from '../../utils/sumHours';
+import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 
 export default function Reserved(): JSX.Element {
 	const localStorageId = new LocalStorageHelper<string>();

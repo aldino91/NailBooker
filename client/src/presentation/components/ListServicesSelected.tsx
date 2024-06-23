@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 interface Props {
 	selectedServices: Array<any>;
 	setSelectedServices: (arg: Array<any>) => void;

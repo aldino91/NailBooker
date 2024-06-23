@@ -1,6 +1,20 @@
 export const bgColorDefault = 'bg-purple-400';
 export const bgColorDisable = 'bg-purple-300';
 
+export const books = {
+	id: '',
+	hourBook: '09:00',
+	time: '00:30',
+	services: [''],
+	available: true,
+	dayBook: 0,
+	status: 'disponible',
+	reservarName: '',
+	usersId: '',
+	start: '',
+	duration: '00:00',
+};
+
 export const listHoursAvalable = [
 	{
 		id: '',

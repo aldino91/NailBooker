@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { bgColorDefault, bgColorDisable } from '../utils/constants';
 import { fetchLogin } from '../api/fetchLogin';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from '../presentation/components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 
 export default function FormLogin(): JSX.Element {

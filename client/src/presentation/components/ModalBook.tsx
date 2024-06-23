@@ -1,38 +1,29 @@
 import { ChangeEvent, useState } from 'react';
-import { Booking, ListBook, ModalData, typeNewBook } from '../utils/interfaces';
-import SegmentService from './SegmentService';
+import SegmentService from '../../components/SegmentService';
+
+import ListServicesSelected from './ListServicesSelected';
+import { sumHours } from '../../utils/sumHours';
+import HeaderInfoModalBook from './HeaderInfoModalBook';
+import ButtonClose from '../../components/ButtonClose';
+import { DataCreatedBook } from '../../api/fetchCreatedBooking';
+import LocalStorageHelper from '../../utils/localStorage';
+import LoadingSpinner from './LoadingSpinner';
+import { sumListServices } from '../../utils/sumListServices';
+import { useReservationStore } from '../../infrastructure/store/reservationsStore';
 import ListServicesManicure from './ListServicesManicure';
 import ListServicesPedicure from './ListServicesPedicure';
-import ListServicesSelected from './ListServicesSelected';
-import { sumHours } from '../utils/sumHours';
-import { fromStringToNum } from '../utils/fromStringToNum';
-import HeaderInfoModalBook from './HeaderInfoModalBook';
-import ButtonClose from './ButtonClose';
-import { DataCreated, fetchCreatedBookings } from '../api/fetchCreatedBooking';
-import LocalStorageHelper from '../utils/localStorage';
-import LoadingSpinner from './LoadingSpinner';
-import { sumListServices } from '../utils/sumListServices';
-import { createdBooking } from '../utils/createdBooking';
-import { Books } from '../domain/entities/Books';
 
 interface Props {
-	showModal: ModalData;
-	setShowModal: (arg: ModalData) => void;
-	bookAvalable: Books[] | undefined;
-	setBookAvalable: (arg: Books[]) => void;
-	// refreshGet: boolean;
-	// setRefreshGet: (arg: boolean) => void;
+	showModal: boolean;
+	setShowModal: (arg: boolean) => void;
 }
 
 export default function ModalBook({
 	showModal,
 	setShowModal,
-	bookAvalable,
-	setBookAvalable,
-}: // refreshGet,
-// setRefreshGet,
-Props): JSX.Element {
+}: Props): JSX.Element {
 	const localStorageId = new LocalStorageHelper<string>();
+	const { fetchCreatedBook, bookSelected } = useReservationStore();
 	const [services, setServices] = useState<string>('Manicure');
 	const [selectedServices, setSelectedServices] = useState<
 		Array<{ [key: string]: string }>
@@ -41,14 +32,6 @@ Props): JSX.Element {
 	const [formData, setFormData] = useState({
 		name: '',
 	});
-	const createdBook: DataCreated = {
-		hourBook: showModal?.hour!,
-		reservarName: formData.name,
-		services: sumListServices(selectedServices),
-		duration: sumHours(selectedServices),
-		dayBook: showModal?.day!,
-		usersId: localStorageId.load('userId')!,
-	};
 
 	const [loading, setLoading] = useState(false);
 
@@ -60,62 +43,45 @@ Props): JSX.Element {
 		});
 	};
 
+	const createdBook: DataCreatedBook = {
+		hourBook: bookSelected?.hourBook!,
+		reservarName: formData.name,
+		services: sumListServices(selectedServices),
+		duration: sumHours(selectedServices),
+		dayBook: bookSelected?.dayBook!,
+		usersId: localStorageId.load('userId')!,
+	};
+
 	const handlerSave = async () => {
 		try {
 			setLoading(true);
 
-			const response = await fetchCreatedBookings(createdBook);
-
-			const id = response?.data.data.id;
-
-			const dataAddList = {
-				hourBook: showModal?.hour!,
-				reservarName: formData.name,
-				services: sumListServices(selectedServices),
-				duration: sumHours(selectedServices),
-				dayBook: showModal?.day!,
-				usersId: localStorageId.load('userId')!,
-				available: false,
-				status: 'occupato',
-				time: '00:00',
-				id: id,
-			};
-			const addBooking: Books[] = await createdBooking({
-				dataAddList,
-				bookAvalable,
-				showModal,
-				name: formData.name,
-				id,
-				usersId: localStorageId.load('userId')!,
-				selectedServices,
-			});
-			setBookAvalable([...addBooking!]);
+			await fetchCreatedBook(createdBook);
 
 			setLoading(false);
-			setShowModal({ open: !showModal.open });
+
+			setShowModal(!showModal);
 		} catch (error) {
 			console.log('Error Created book: ', error);
+
 			setLoading(false);
-			setShowModal({ open: !showModal.open });
+
+			setShowModal(!showModal);
 		}
 	};
 
 	return (
 		<div
 			className={`h-full absolute top-0 left-0 z-40 ${
-				showModal.open
-					? 'animate-slideInUp w-full'
-					: 'animate-slideOutDown w-full'
+				showModal ? 'animate-slideInUp w-full' : 'animate-slideOutDown w-full'
 			}`}
 		>
 			<div className="justify-center items-center flex overflow-x-hidden overflow-y-scroll inset-0 fixed outline-none focus:outline-none w-full h-full bg-modal">
 				<div className="w-full lg:w-1/2 mx-auto h-full lg:h-3/4">
 					<div className="border rounded-lg shadow-lg relative flex flex-col justify-between space-y-4 w-full bg-white outline-none focus:outline-none border-blueGray-200 h-full overflow-y-auto">
-						<ButtonClose
-							setClose={() => setShowModal({ open: !showModal.open })}
-						/>
+						<ButtonClose setClose={() => setShowModal(!showModal)} />
 
-						<HeaderInfoModalBook data={showModal} />
+						<HeaderInfoModalBook />
 
 						<div className="flex flex-col lg:space-y-7 px-2 pt-2 order-2 h-4/6">
 							<SegmentService services={services} setServices={setServices} />

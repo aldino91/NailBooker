@@ -1,6 +1,6 @@
-import BaseLayout from '../presentation/components/BaseLayout';
-import FormLogin from '../components/FormLogin';
-import HeaderBar from '../presentation/components/HeaderBar';
+import FormLogin from '../../components/FormLogin';
+import BaseLayout from '../components/BaseLayout';
+import HeaderBar from '../components/HeaderBar';
 
 export default function Login(): JSX.Element {
 	return (

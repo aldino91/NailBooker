@@ -7,7 +7,7 @@ import { setDateStartCalendar } from '../../utils/setDateStartCalendar';
 import AvailableHoursAdmin from '../components/AvailableHoursAdmin';
 
 export default function DashboardAdmin(): JSX.Element {
-	const { startDate, weekCurrent, dateSelected, setStartDate, fetchBooks } =
+	const { weekCurrent, dateSelected, fetchBooks, startDate } =
 		useReservationStore();
 
 	useEffect(() => {
@@ -18,11 +18,7 @@ export default function DashboardAdmin(): JSX.Element {
 		<BaseLayout>
 			<HeaderBar title="Dashboard Admin" href="" />
 			<div className="flex flex-col space-y-5 mb-6">
-				<FormCalendar
-					startDate={startDate}
-					setStartDate={setStartDate}
-					weekCurrent={weekCurrent}
-				/>
+				<FormCalendar weekCurrent={weekCurrent} />
 				<AvailableHoursAdmin
 					dateCurrent={setDateStartCalendar(startDate)}
 					dateSelected={dateSelected}

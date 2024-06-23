@@ -21,15 +21,19 @@ export const filterHoursAvailable = (
 			) {
 				listHoursAvailableCopy[i] = {
 					...listHoursAvailableCopy[i],
-					...book,
+					hourBook: listHoursAvailableCopy[i].hourBook,
+					duration: book.duration,
+					reservarName: book.reservarName,
+					services: book.services,
+					dayBook: book.dayBook,
+					start: book.hourBook,
+					id: book.id,
 					status: 'occupato',
 					available: false,
 				};
 			}
 		}
 	});
-
-	console.log('listHoursAvailableCopy: ', listHoursAvailableCopy);
 
 	return listHoursAvailableCopy;
 };

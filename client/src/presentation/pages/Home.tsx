@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import BaseLayout from '../presentation/components/BaseLayout';
-import BodyHome from '../components/BodyHome';
+import BaseLayout from '../components/BaseLayout';
+import BodyHome from '../../components/BodyHome';
 
 export function Home(): JSX.Element {
 	const navigate = useNavigate();
