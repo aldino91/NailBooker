@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { bgColorDefault, bgColorDisable } from '../utils/constants';
 import { fetchRegister } from '../api/fetchRegister';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from '../presentation/components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 
 export default function FormRegister(): JSX.Element {

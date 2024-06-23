@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import BaseLayout from '../presentation/components/BaseLayout';
-import { bgColorDefault, bgColorDisable } from '../utils/constants';
-import { fecthAuthorized } from '../api/fetchAuthorized';
-import HeaderBar from '../presentation/components/HeaderBar';
+import { fecthAuthorized } from '../../api/fetchAuthorized';
+import BaseLayout from '../components/BaseLayout';
+import HeaderBar from '../components/HeaderBar';
+import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 
 export default function Calendar(): JSX.Element {
 	const [startDate, setStartDate] = useState<Date | string>(new Date());

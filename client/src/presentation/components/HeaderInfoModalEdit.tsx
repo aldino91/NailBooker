@@ -1,20 +1,20 @@
 import { fromUnixTime } from 'date-fns';
-import { ListBook, ModalDataEdit } from '../utils/interfaces';
-import IconCollapse from './IconCollapse';
-import { formatDate } from '../utils/formateDate';
+import { useReservationStore } from '../../infrastructure/store/reservationsStore';
+import { formatDate } from '../../utils/formateDate';
+import IconCollapse from '../../components/IconCollapse';
 
 interface Props {
-	data: ListBook | undefined;
 	close: boolean;
 	setClose: (ard: boolean) => void;
 }
 
 export default function HeaderInfoModalEdit({
-	data,
 	close,
 	setClose,
 }: Props): JSX.Element {
-	const dayDate = fromUnixTime(data?.dayBook as number);
+	const { bookSelected } = useReservationStore();
+
+	const dayDate = fromUnixTime(bookSelected?.dayBook as number);
 	const day = formatDate(dayDate.toISOString());
 	return (
 		<div className="flex flex-col px-3 space-y-4">
@@ -24,28 +24,28 @@ export default function HeaderInfoModalEdit({
 			<div className="flex flex-row justify-between items-center w-full">
 				<div className="flex-col items-start justify-between rounded-t w-3/4">
 					<div>
-						<text>Nome: {data?.reservarName?.toLocaleUpperCase()}</text>
+						<text>Nome: {bookSelected?.reservarName?.toLocaleUpperCase()}</text>
 					</div>
 					<div>
 						<text>Giorno: {day}</text>
 					</div>
 					<div>
-						<text>Ora: {data?.hourBook}</text>
+						<text>Ora: {bookSelected?.hourBook}</text>
 					</div>
 					<div>
-						<text>Stato: {data?.status}</text>
+						<text>Stato: {bookSelected?.status}</text>
 					</div>
 					<div>
-						<text>Durata: {data?.duration}</text>
+						<text>Durata: {bookSelected?.duration}</text>
 					</div>
 					<div>
-						<text>Inizio: {data?.start}</text>
+						<text>Inizio: {bookSelected?.start}</text>
 					</div>
 					<div>
 						<text>Servizzi: </text>
 					</div>
 					<div>
-						{data?.services?.map((service, i) => {
+						{bookSelected?.services?.map((service, i) => {
 							return <div key={i}>- {service} </div>;
 						})}
 					</div>
