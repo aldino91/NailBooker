@@ -16,6 +16,8 @@ import HeaderInfoModalEdit from './HeaderInfoModalEdit';
 import ListServicesManicure from './ListServicesManicure';
 import ListServicesPedicure from './ListServicesPedicure';
 import ButtonFooterModalEdit from './ButtonFooterModalEdit';
+import LocalStorageHelper from '../../utils/localStorage';
+import useToast from '../../hook/HookToast';
 
 interface Props {
 	showModal: boolean;
@@ -31,6 +33,9 @@ export default function ModalBookEdit({
 	showModal,
 	setShowModal,
 }: Props): JSX.Element {
+	const localStorage = new LocalStorageHelper();
+
+	const { notify } = useToast();
 	const {
 		dateSelected,
 		setBookSelected,
@@ -67,8 +72,12 @@ export default function ModalBookEdit({
 			.then(() => {
 				setShowLoadingDelete(false);
 				setShowModal(!showModal);
+				notify('Prenotazione cancellata con successo...', 'success');
+				localStorage.clear('PreviousListBook');
 			})
 			.catch((error) => {
+				localStorage.clear('PreviousListBook');
+				notify('Non é stato possibile cancellare la prenotazione...', 'error');
 				console.log('ERROR FETCH: ', error);
 			});
 	};
@@ -98,11 +107,17 @@ export default function ModalBookEdit({
 
 			await fetchBookUpdate(data);
 
+			notify('Prenotazione aggiornata correttamente...', 'success');
+
+			localStorage.clear('PreviousListBook');
+
 			setShowLoadingUpdate(false);
 
 			setShowModal(!showModal);
 		} catch (error) {
 			setShowLoadingUpdate(false);
+			notify('Non é estato possibile aggiornare la prenotazione...', 'error');
+			localStorage.clear('PreviousListBook');
 			setShowModal(!showModal);
 			console.log('Error Update: ', error);
 		}
@@ -169,13 +184,6 @@ export default function ModalBookEdit({
 									)}
 								</div>
 							</div>
-							<div className="">
-								<AvailableHoursEdit
-									dateCurrent={dateSelected}
-									dateSelected={dateSelected}
-									dataUpdate={data}
-								/>
-							</div>
 							<form className="w-full px-2">
 								<div className=" flex flex-col space-y-1 w-full">
 									<div>
@@ -193,6 +201,13 @@ export default function ModalBookEdit({
 									</div>
 								</div>
 							</form>
+							<div className="">
+								<AvailableHoursEdit
+									dateCurrent={dateSelected}
+									dateSelected={dateSelected}
+									dataUpdate={data}
+								/>
+							</div>
 						</div>
 
 						<ButtonFooterModalEdit

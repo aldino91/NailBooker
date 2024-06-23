@@ -12,6 +12,9 @@ import { sumListServices } from '../../utils/sumListServices';
 import { useReservationStore } from '../../infrastructure/store/reservationsStore';
 import ListServicesManicure from './ListServicesManicure';
 import ListServicesPedicure from './ListServicesPedicure';
+import useToast from '../../hook/HookToast';
+import { conditionChangeListDaysBooks } from '../../utils/conditionChangeListDaysBooks';
+import { fromStringToNum } from '../../utils/fromStringToNum';
 
 interface Props {
 	showModal: boolean;
@@ -22,9 +25,15 @@ export default function ModalBook({
 	showModal,
 	setShowModal,
 }: Props): JSX.Element {
+	const { notify } = useToast();
+
 	const localStorageId = new LocalStorageHelper<string>();
-	const { fetchCreatedBook, bookSelected } = useReservationStore();
+
+	const { fetchCreatedBook, bookSelected, listBookDays } =
+		useReservationStore();
+
 	const [services, setServices] = useState<string>('Manicure');
+
 	const [selectedServices, setSelectedServices] = useState<
 		Array<{ [key: string]: string }>
 	>([]);
@@ -53,20 +62,42 @@ export default function ModalBook({
 	};
 
 	const handlerSave = async () => {
-		try {
-			setLoading(true);
+		const durationBook = fromStringToNum(sumHours(selectedServices));
 
-			await fetchCreatedBook(createdBook);
+		if (listBookDays && bookSelected?.dayBook) {
+			const index = listBookDays.findIndex(
+				(day) => day.hourBook === bookSelected?.hourBook
+			);
+			const condicion = conditionChangeListDaysBooks({
+				index,
+				durationBook,
+				listBookDays,
+				bookSelected,
+			});
 
-			setLoading(false);
+			if (condicion) {
+				try {
+					setLoading(true);
 
-			setShowModal(!showModal);
-		} catch (error) {
-			console.log('Error Created book: ', error);
+					await fetchCreatedBook(createdBook);
 
-			setLoading(false);
+					notify('Prenotazione creata correttamente...', 'success');
 
-			setShowModal(!showModal);
+					setLoading(false);
+
+					setShowModal(!showModal);
+				} catch (error) {
+					console.log('Error Created book: ', error);
+
+					notify('Non siamo riuscite a creare la prenotazione...', 'error');
+
+					setLoading(false);
+
+					setShowModal(!showModal);
+				}
+			} else {
+				notify('Tempo non sufficiente per i servizzi scelti...', 'warn');
+			}
 		}
 	};
 

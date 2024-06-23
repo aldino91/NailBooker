@@ -8,8 +8,11 @@ import { DataCreatedBook } from '../../api/fetchCreatedBooking';
 import { DataUpdate } from '../../api/fetchUpdateBook';
 import { fromStringToNum } from '../../utils/fromStringToNum';
 import { BooksRepository } from './repositories.ts/BooksRepository';
+import LocalStorageHelper from '../../utils/localStorage';
 
 interface ReservationState {
+	isLoading: boolean;
+	setIsLoading: () => void;
 	listBooks: Books[] | undefined;
 	setListBooks: (books: Books) => void;
 	bookSelected: Books | undefined;
@@ -35,6 +38,13 @@ interface ReservationState {
 const booksRepository = new BooksRepository();
 
 export const useReservationStore = create<ReservationState>((set, get) => ({
+	isLoading: false,
+	setIsLoading: () => {
+		const loading = get().isLoading;
+		set({
+			isLoading: !loading,
+		});
+	},
 	listBooks: undefined,
 	setListBooks: (book: Books) => {
 		const listBooks = get().listBooks;
@@ -58,6 +68,14 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 	updateListBookDays: (book: Books, hourSelected: string) => {
 		const booksDays = get().listBookDays;
 		const bookSelected = get().bookSelected;
+
+		const localStorage = new LocalStorageHelper();
+
+		const previousList = localStorage.load('PreviousListBook');
+
+		if (previousList === null) {
+			localStorage.save('PreviousListBook', booksDays);
+		}
 
 		if (!booksDays) {
 			console.error('listBookDays is undefined');
@@ -108,14 +126,23 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 	fetchBooks: async () => {
 		const { dateFrom, dateTo } = dateFromTo(get().startDate);
 
+		const setIsLoading = get().setIsLoading;
+
 		try {
+			setTimeout(async () => {
+				setIsLoading();
+			}, 1000);
+
 			const books = await booksRepository.rangeDateBooks(dateFrom, dateTo);
+
+			setIsLoading();
 
 			set({
 				dateSelected: get().startDate,
 				listBooks: books,
 			});
 		} catch (err) {
+			setIsLoading();
 			console.error(err);
 		}
 	},

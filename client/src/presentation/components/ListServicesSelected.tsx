@@ -19,7 +19,7 @@ export default function ListServicesSelected({
 	};
 
 	return (
-		<div className="w-full flex flex-wrap">
+		<div className="w-full flex flex-wrap my-3">
 			{selectedServices?.map((service, i) => {
 				return (
 					<div
