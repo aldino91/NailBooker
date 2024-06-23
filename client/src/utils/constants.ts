@@ -326,3 +326,8 @@ export const servicesPedicure = [
 		duration: '01:30',
 	},
 ];
+
+export const styleToast = {
+	width: '300px',
+	margin: '10px auto',
+};
