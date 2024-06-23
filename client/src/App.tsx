@@ -7,6 +7,8 @@ import Register from './presentation/pages/Register';
 import Login from './presentation/pages/Login';
 import Reserved from './presentation/pages/Reserved';
 import Calendar from './presentation/pages/Calendar';
+import { ToastContainer } from 'react-toastify';
+import { styleToast } from './utils/constants';
 
 function App() {
 	return (
@@ -20,6 +22,12 @@ function App() {
 				<Route path="/calendar" element={<Calendar />} />
 				<Route path="/dashboard-admin" element={<DashboardAdmin />} />
 			</Routes>
+			<ToastContainer
+				autoClose={9000}
+				closeButton={true}
+				position="top-right"
+				style={styleToast}
+			/>
 		</div>
 	);
 }
