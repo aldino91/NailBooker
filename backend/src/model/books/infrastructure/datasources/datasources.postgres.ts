@@ -181,4 +181,26 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 			return { err: new ErrorInternalServer('Error to delete the booking') };
 		}
 	}
+
+	async rangeDateBooks(
+		dateFrom: number,
+		dateTo: number
+	): Promise<{ err?: ErrorBookingBase; data?: Books[] }> {
+		try {
+			const listBooks = await prisma.bookings.findMany({
+				where: {
+					AND: [{ dayBook: { gte: dateFrom } }, { dayBook: { lte: dateTo } }],
+				},
+			});
+
+			return { err: undefined, data: listBooks };
+		} catch (error) {
+			return {
+				err: new ErrorInternalServer(
+					'Error for search range books for this date...'
+				),
+				data: undefined,
+			};
+		}
+	}
 }

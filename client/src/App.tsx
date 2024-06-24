@@ -23,7 +23,7 @@ function App() {
 				<Route path="/dashboard-admin" element={<DashboardAdmin />} />
 			</Routes>
 			<ToastContainer
-				autoClose={9000}
+				autoClose={4000}
 				closeButton={true}
 				position="top-right"
 				style={styleToast}

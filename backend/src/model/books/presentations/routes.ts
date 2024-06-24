@@ -26,7 +26,7 @@ export class BooksRoutes {
 
 		router.get('/books', controller.getById);
 
-		router.get('/books/range-date', controller.rangeDate);
+		router.get('/books/range-date', controller.rangeDateBooks);
 
 		router.delete('/book-delete/:id', controller.deleteById);
 

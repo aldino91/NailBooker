@@ -172,7 +172,8 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 		);
 
 		const listBooks = get().listBooks;
-		if (listBooks) {
+
+		if (Array.isArray(listBooks)) {
 			const bookForDayCurrent = listBooks.filter(
 				(book) => book.dayBook === dateCurrent
 			);
@@ -182,6 +183,8 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 				listHoursAvailableCopy
 			);
 			set({ listBookDays: updatedList });
+		} else {
+			set({ listBookDays: listHoursAvailableCopy });
 		}
 	},
 	updateListBooks: (listBooks) => {

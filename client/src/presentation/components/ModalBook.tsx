@@ -81,7 +81,7 @@ export default function ModalBook({
 
 					await fetchCreatedBook(createdBook);
 
-					notify('Prenotazione creata correttamente...', 'success');
+					notify('Prenotazione creata correttamente 🙌🏻 ✅', 'success');
 
 					setLoading(false);
 
@@ -89,14 +89,14 @@ export default function ModalBook({
 				} catch (error) {
 					console.log('Error Created book: ', error);
 
-					notify('Non siamo riuscite a creare la prenotazione...', 'error');
+					notify('Non siamo riuscite a creare la prenotazione ❌', 'error');
 
 					setLoading(false);
 
 					setShowModal(!showModal);
 				}
 			} else {
-				notify('Tempo non sufficiente per i servizzi scelti...', 'warn');
+				notify('Tempo non sufficiente per i servizzi scelti ⌛️', 'warn');
 			}
 		}
 	};

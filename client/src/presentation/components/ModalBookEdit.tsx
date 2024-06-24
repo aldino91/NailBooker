@@ -72,12 +72,12 @@ export default function ModalBookEdit({
 			.then(() => {
 				setShowLoadingDelete(false);
 				setShowModal(!showModal);
-				notify('Prenotazione cancellata con successo...', 'success');
+				notify('Prenotazione cancellata con successo ❎', 'success');
 				localStorage.clear('PreviousListBook');
 			})
 			.catch((error) => {
 				localStorage.clear('PreviousListBook');
-				notify('Non é stato possibile cancellare la prenotazione...', 'error');
+				notify('Non é stato possibile cancellare la prenotazione ❌', 'error');
 				console.log('ERROR FETCH: ', error);
 			});
 	};
@@ -107,7 +107,7 @@ export default function ModalBookEdit({
 
 			await fetchBookUpdate(data);
 
-			notify('Prenotazione aggiornata correttamente...', 'success');
+			notify('Prenotazione aggiornata correttamente 👍🏻', 'success');
 
 			localStorage.clear('PreviousListBook');
 
@@ -116,7 +116,7 @@ export default function ModalBookEdit({
 			setShowModal(!showModal);
 		} catch (error) {
 			setShowLoadingUpdate(false);
-			notify('Non é estato possibile aggiornare la prenotazione...', 'error');
+			notify('Non é estato possibile aggiornare la prenotazione 😵', 'error');
 			localStorage.clear('PreviousListBook');
 			setShowModal(!showModal);
 			console.log('Error Update: ', error);

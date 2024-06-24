@@ -8,6 +8,7 @@ import { UseCaseGetAllBooks } from '../domain/use.cases/getAllBooks.use.case';
 import { UseCaseDeleteById } from '../domain/use.cases/deleteById.use.case';
 import { UseCaseUpdateBook } from '../domain/use.cases/update.use.case';
 import { UpdateDto } from '../domain/dtos/books/dtos.update.book';
+import { UseRangeDateBooks } from '../domain/use.cases/range.date.books.use.case';
 
 export class BooksController {
 	constructor(public readonly booksRepository: RepositoryBooks) {}
@@ -68,24 +69,21 @@ export class BooksController {
 			});
 	};
 
-	rangeDate = async (req: Request, res: Response) => {
+	rangeDateBooks = async (req: Request, res: Response) => {
 		const data = req.query;
 
 		const dateFrom = Number(data.dateFrom);
 
 		const dateTo = Number(data.dateTo);
 
-		try {
-			const listBooks = await prisma.bookings.findMany({
-				where: {
-					AND: [{ dayBook: { gte: dateFrom } }, { dayBook: { lte: dateTo } }],
-				},
+		new UseRangeDateBooks(this.booksRepository)
+			.execute(dateFrom, dateTo)
+			.then((resp) => {
+				return res.status(200).json(resp.data);
+			})
+			.catch((err) => {
+				return res.status(500).json(err);
 			});
-
-			res.status(200).json(listBooks);
-		} catch (error) {
-			res.status(500).json(error);
-		}
 	};
 
 	updated = async (req: Request, res: Response) => {

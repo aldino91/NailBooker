@@ -30,4 +30,11 @@ export default class RepositoryBooksImpl implements RepositoryBooks {
 	): Promise<{ err?: ErrorBookingBase; data?: Books }> {
 		return await this.datasources.deleteBook(id);
 	}
+
+	async rangeDateBooks(
+		dateFrom: number,
+		dateTo: number
+	): Promise<{ err?: ErrorBookingBase; data?: Books[] }> {
+		return await this.datasources.rangeDateBooks(dateFrom, dateTo);
+	}
 }
