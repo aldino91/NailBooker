@@ -1,14 +1,14 @@
 import BaseLayout from '../components/BaseLayout';
-import FormLogin from '../components/FormLogin';
+import FormForgotPassword from '../components/FormForgotPassword';
 import HeaderBar from '../components/HeaderBar';
 
-export default function Login(): JSX.Element {
+export default function ForgotPassword(): JSX.Element {
 	return (
 		<BaseLayout>
 			<div className="flex flex-col items-center  h-screen">
-				<HeaderBar title="Login" />
+				<HeaderBar title="Forgot password" />
 
-				<FormLogin />
+				<FormForgotPassword />
 			</div>
 		</BaseLayout>
 	);
