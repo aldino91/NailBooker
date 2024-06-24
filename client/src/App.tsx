@@ -9,6 +9,8 @@ import Reserved from './presentation/pages/Reserved';
 import Calendar from './presentation/pages/Calendar';
 import { ToastContainer } from 'react-toastify';
 import { styleToast } from './utils/constants';
+import ForgotPassword from './presentation/pages/ForgotPassword';
+import ResetPassword from './presentation/pages/ResetPassword';
 
 function App() {
 	return (
@@ -20,6 +22,8 @@ function App() {
 				<Route path="/login" element={<Login />} />
 				<Route path="/reserved" element={<Reserved />} />
 				<Route path="/calendar" element={<Calendar />} />
+				<Route path="/forgot-password" element={<ForgotPassword />} />
+				<Route path="/reset-password" element={<ResetPassword />} />
 				<Route path="/dashboard-admin" element={<DashboardAdmin />} />
 			</Routes>
 			<ToastContainer
