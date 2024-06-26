@@ -4,9 +4,12 @@ import { fetchLogin } from '../../api/fetchLogin';
 import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 import LoadingSpinner from './LoadingSpinner';
 import InputCustom from './InputCustom';
+import useToast from '../../hook/HookToast';
 
 export default function FormLogin(): JSX.Element {
 	const navigate = useNavigate();
+
+	const { notify } = useToast();
 
 	const [showPassword, setShowPassword] = useState(true);
 
@@ -37,21 +40,25 @@ export default function FormLogin(): JSX.Element {
 
 			const resp = await fetchLogin(formData);
 
-			if (
-				resp?.data?.user.role === 'admin' &&
-				resp.data.message === 'Login successful'
-			) {
-				navigate('/dashboard-admin');
-			} else if (
-				resp?.data?.user.role !== 'admin' &&
-				resp.data.message === 'Login successful'
-			) {
-				navigate('/reserved');
+			if (resp.data.error) {
+				notify(resp.data.error, 'warn');
+			} else {
+				if (
+					resp?.data?.user.role === 'admin' &&
+					resp.data.message === 'Login successful'
+				) {
+					navigate('/dashboard-admin');
+				}
+				if (
+					resp?.data?.user.role !== 'admin' &&
+					resp.data.message === 'Login successful'
+				) {
+					navigate('/reserved');
+				}
 			}
-
 			setShowLoading(false);
 		} catch (error) {
-			console.log(error);
+			console.log('Error Login =>', error);
 			setShowLoading(false);
 		}
 	};

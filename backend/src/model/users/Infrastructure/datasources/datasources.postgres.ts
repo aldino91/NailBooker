@@ -12,6 +12,7 @@ import { RegisterUserDto } from '../../domain/dtos/auth/dtos.register.user';
 import IntReturnLoginUser from '../../interface/intReturnLoginUser';
 import IntReturnRegisterUser from '../../interface/interfReturnfetch';
 import EmailService from '../../presentations/EmailService.ts/EmailService';
+import sendEmailForgotPassword from '../../presentations/EmailService.ts/sendEmailForgotPassoword';
 import sendEmailValidationLink from '../../presentations/EmailService.ts/sendEmailValidationLink';
 
 export class UserDataSourcesPostgresImpl implements UserDataSources {
@@ -36,14 +37,19 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 		});
 
 		if (ExistedUser) {
-			throw new UserNotFoundError('The user already exists!');
+			return {
+				error: new UserNotFoundError('The user already exists!').descriptions,
+			};
 		}
 		const passwordHash = BcryptAdapter.hash(password);
 
 		const sendEmail = await sendEmailValidationLink(this.emailService, email);
 
 		if (sendEmail === false)
-			throw new ErrorSentEmail('Error for sent validation email!');
+			return {
+				error: new ErrorSentEmail('Error for sent validation email!')
+					.descriptions,
+			};
 
 		try {
 			const user = await prisma.users.create({
@@ -60,7 +66,8 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 			return { error: undefined, user };
 		} catch (error) {
 			return {
-				error: new ErrorInternalServer('Error internal server-created user'),
+				error: new ErrorInternalServer('Error internal server-created user')
+					.descriptions,
 				user: undefined,
 			};
 		}
@@ -74,7 +81,10 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 		});
 
 		if (!user)
-			throw new ErrorUserEmailOrPassword('Email or password is not exist!');
+			return {
+				error: new ErrorUserEmailOrPassword('Email or password is not exist!')
+					.descriptions,
+			};
 
 		const isMatching = BcryptAdapter.compare(
 			loginUserDto.password,
@@ -82,7 +92,10 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 		);
 
 		if (!isMatching)
-			throw new ErrorUserEmailOrPassword('Email or Password is not valid!');
+			return {
+				error: new ErrorUserEmailOrPassword('Email or Password is not valid!')
+					.descriptions,
+			};
 
 		const token = await JwtAdapter.generateToken(
 			{
@@ -94,7 +107,9 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 		);
 
 		if (!token || typeof token !== 'string')
-			throw new ErrorTokenUser('Error when generating token!');
+			return {
+				error: new ErrorTokenUser('Error when generating token!').descriptions,
+			};
 
 		return { error: undefined, user, token: token };
 	}
@@ -122,6 +137,81 @@ export class UserDataSourcesPostgresImpl implements UserDataSources {
 			return {
 				error: new ErrorTokenUser('Error validated token!'),
 				data: 'Error validated token!',
+			};
+		}
+	}
+
+	async forgotPassword(
+		email: string
+	): Promise<{ data?: string; status: string }> {
+		const user = await prisma.users.findFirst({
+			where: {
+				email: email,
+			},
+		});
+
+		if (!user)
+			return {
+				data: 'Email non trovato nel nostro database...',
+				status: 'warn',
+			};
+
+		try {
+			const sendEmail = await sendEmailForgotPassword(
+				this.emailService,
+				email,
+				user.id
+			);
+
+			if (sendEmail === false)
+				return {
+					data: `Non é andato a buon fine l'invio dell'email a: ${email}, provi piú tardi. Grazie.`,
+					status: 'warn',
+				};
+
+			return {
+				data: `Abbiamo inviato un'email all'indirizzo ${email} contenente le istruzioni per reimpostare la tua password. Ti preghiamo di controllare la tua casella di posta elettronica e di seguire le indicazioni fornite.`,
+				status: 'success',
+			};
+		} catch (error) {
+			console.error('Error: ', error);
+
+			return {
+				data: `Stiamo avendo problemi con il server, per favore provi piú tardi. Grazie.`,
+				status: 'error',
+			};
+		}
+	}
+
+	async resetPassword(id: string, confirm: string): Promise<{ data?: string }> {
+		try {
+			const user = await prisma.users.findFirst({
+				where: {
+					id,
+				},
+			});
+
+			if (!user)
+				return {
+					data: 'Questo utente non é registrato nella nostra plattaforma...',
+				};
+
+			const passwordHash = BcryptAdapter.hash(confirm);
+
+			await prisma.users.update({
+				where: {
+					id,
+				},
+				data: {
+					password: passwordHash,
+				},
+			});
+
+			return { data: 'Password aggiornata con successo... ' };
+		} catch (error) {
+			console.log('Error: ', error);
+			return {
+				data: 'Non é stato possibile aggiornare la password, prova piú tardi. Grazie',
 			};
 		}
 	}

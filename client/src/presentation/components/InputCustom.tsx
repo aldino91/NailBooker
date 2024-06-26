@@ -22,6 +22,17 @@ export default function InputCustom({
 	handleShowPassword,
 }: Props) {
 	const navigate = useNavigate();
+
+	const typeInput = (): string => {
+		if (showPassword === false && type === 'password') {
+			return 'text';
+		}
+
+		if (showPassword === true && type === 'password') {
+			return 'password';
+		}
+		return type;
+	};
 	return (
 		<div className=" flex flex-col space-y-1 w-4/5">
 			<div className="flex flex-row justify-between">
@@ -39,7 +50,7 @@ export default function InputCustom({
 			<div className="w-full relative">
 				<div>
 					<input
-						type={!showPassword ? 'text' : 'password'}
+						type={typeInput()}
 						name={name}
 						className="p-2 border-2 border-gray-300 rounded-lg w-full"
 						value={formData[name]}

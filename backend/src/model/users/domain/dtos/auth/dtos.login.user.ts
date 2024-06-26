@@ -7,18 +7,21 @@ export class LoginUserDto {
 		public readonly password: string
 	) {}
 
-	static create(object: {
-		[key: string]: string;
-	}): [ErrorUserLoginDto?, LoginUserDto?] {
+	static create(object: { [key: string]: string }): {
+		error?: string;
+		user?: LoginUserDto;
+	} {
 		const { email, password } = object;
 
-		if (!email) return [new ErrorUserLoginDto('Missing email')];
+		if (!email)
+			return { error: new ErrorUserLoginDto('Missing email').descriptions };
 		if (!regularExps.email.test(email))
-			return [new ErrorUserLoginDto('Email is not valid')];
-		if (!password) return [new ErrorUserLoginDto('Missing password')];
-		if (password.length < 6)
-			return [new ErrorUserLoginDto('Password to short')];
+			return {
+				error: new ErrorUserLoginDto('Email is not valid').descriptions,
+			};
+		if (!password)
+			return { error: new ErrorUserLoginDto('Missing password').descriptions };
 
-		return [undefined, new LoginUserDto(email, password)];
+		return { error: undefined, user: new LoginUserDto(email, password) };
 	}
 }

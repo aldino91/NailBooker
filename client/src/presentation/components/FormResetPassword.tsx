@@ -2,20 +2,21 @@ import { ChangeEvent, useState } from 'react';
 import InputCustom from './InputCustom';
 import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 import LoadingSpinner from './LoadingSpinner';
+import useToast from '../../hook/HookToast';
+import { useParams } from 'react-router-dom';
+import { fetchResetPassword } from '../../api/fetchResetPassword';
 
 export default function FormResetPassword() {
+	const { id } = useParams();
+
 	const [showLoading, setShowLoading] = useState(false);
 
-	const [showPassword, setShowPassword] = useState(true);
+	const { notify } = useToast();
 
 	const [formData, setFormData] = useState({
 		password: '',
 		confirm: '',
 	});
-
-	const handleShowPassword = () => {
-		setShowPassword(!showPassword);
-	};
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -28,13 +29,34 @@ export default function FormResetPassword() {
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 
-		try {
-			setShowLoading(true);
+		if (formData.password === formData.confirm) {
+			try {
+				setShowLoading(true);
 
-			setShowLoading(false);
-		} catch (error) {
-			console.log(error);
-			setShowLoading(false);
+				const { data, status } = await fetchResetPassword({
+					id: id!,
+					confirm: formData.confirm,
+				});
+
+				setFormData({
+					password: '',
+					confirm: '',
+				});
+
+				notify(data, status);
+
+				setShowLoading(false);
+			} catch (error) {
+				console.log(error);
+				notify(
+					'Abbiamo problemi al server per aggiornare la password, provi piú tardi. Grazie.',
+					'error'
+				);
+				setShowLoading(false);
+			}
+		} else {
+			notify(`Le password non coicidono, provi un'altra volta`, 'warn');
+			console.log('Sono diversi...');
 		}
 	};
 	return (
@@ -54,8 +76,6 @@ export default function FormResetPassword() {
 					formData={formData}
 					handleChange={handleChange}
 					name="confirm"
-					showPassword={showPassword}
-					handleShowPassword={handleShowPassword}
 				/>
 				<div className="w-4/5 pt-10 ">
 					<button

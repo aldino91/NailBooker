@@ -14,4 +14,13 @@ export abstract class UserDataSources {
 	abstract validateEmail(
 		token: string
 	): Promise<{ error?: ErrorTokenUser; data?: string }>;
+
+	abstract forgotPassword(
+		email: string
+	): Promise<{ data?: string; status: string }>;
+
+	abstract resetPassword(
+		id: string,
+		confirm: string
+	): Promise<{ data?: string }>;
 }

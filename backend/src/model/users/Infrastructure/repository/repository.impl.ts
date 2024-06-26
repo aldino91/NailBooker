@@ -21,4 +21,13 @@ export class UserRepositoryImpl implements UserRepository {
 	): Promise<{ error?: ErrorTokenUser; data?: string }> {
 		return await this.datasources.validateEmail(token);
 	}
+
+	async forgotPassword(
+		email: string
+	): Promise<{ data?: string; status: string }> {
+		return await this.datasources.forgotPassword(email);
+	}
+	async resetPassword(id: string, confirm: string): Promise<{ data?: string }> {
+		return await this.datasources.resetPassword(id, confirm);
+	}
 }

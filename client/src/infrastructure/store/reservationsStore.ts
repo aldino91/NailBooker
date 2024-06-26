@@ -129,9 +129,7 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 		const setIsLoading = get().setIsLoading;
 
 		try {
-			setTimeout(async () => {
-				setIsLoading();
-			}, 1000);
+			setIsLoading();
 
 			const books = await booksRepository.rangeDateBooks(dateFrom, dateTo);
 

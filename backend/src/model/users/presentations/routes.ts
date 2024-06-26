@@ -29,6 +29,10 @@ export class AuthRoutes {
 
 		router.post('/auth/register', controller.register);
 
+		router.post('/auth/forgot-password', controller.forgotPassword);
+
+		router.put('/auth/reset-password', controller.resetPassword);
+
 		router.get('/auth/validate-email/:token', controller.validateEmail);
 
 		router.delete('/auth', async (req, res) => {

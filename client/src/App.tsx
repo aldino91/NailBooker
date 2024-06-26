@@ -23,11 +23,11 @@ function App() {
 				<Route path="/reserved" element={<Reserved />} />
 				<Route path="/calendar" element={<Calendar />} />
 				<Route path="/forgot-password" element={<ForgotPassword />} />
-				<Route path="/reset-password" element={<ResetPassword />} />
+				<Route path="/reset-password/:id" element={<ResetPassword />} />
 				<Route path="/dashboard-admin" element={<DashboardAdmin />} />
 			</Routes>
 			<ToastContainer
-				autoClose={4000}
+				autoClose={5000}
 				closeButton={true}
 				position="top-right"
 				style={styleToast}

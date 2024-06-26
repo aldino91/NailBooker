@@ -2,9 +2,13 @@ import { ChangeEvent, useState } from 'react';
 import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 import LoadingSpinner from './LoadingSpinner';
 import InputCustom from './InputCustom';
+import { fetchForgotPassword } from '../../api/fetchForgotPassword';
+import useToast from '../../hook/HookToast';
 
 export default function FormForgotPassword() {
 	const [showLoading, setShowLoading] = useState(false);
+
+	const { notify } = useToast();
 
 	const [formData, setFormData] = useState({
 		email: '',
@@ -24,9 +28,20 @@ export default function FormForgotPassword() {
 		try {
 			setShowLoading(true);
 
+			const response = await fetchForgotPassword(formData.email);
+
+			console.log('Reponse forgot password => ', response);
+
+			if (response.status === 'warn') {
+				notify(response.data, 'warn');
+			} else {
+				notify(response.data, 'success');
+			}
+
 			setShowLoading(false);
 		} catch (error) {
 			console.log(error);
+			notify('Stiamo avendo problemi nei server, provi piú tardi. ❌', 'error');
 			setShowLoading(false);
 		}
 	};
