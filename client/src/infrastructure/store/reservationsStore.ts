@@ -15,7 +15,7 @@ interface ReservationState {
 	setIsLoading: () => void;
 	listBooks: Books[] | undefined;
 	setListBooks: (books: Books) => void;
-	bookSelected: Books | undefined;
+	bookSelected: Books;
 	setBookSelected: (book: Books) => void;
 	listBookDays: Books[] | undefined;
 	updateListBookDays: (book: Books, hourSelected: string) => void;
@@ -59,7 +59,7 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 			});
 		}
 	},
-	bookSelected: undefined,
+	bookSelected: JSON.parse(localStorage.getItem('bookSelected') || 'null'),
 	setBookSelected: (book: Books) =>
 		set({
 			bookSelected: book,
@@ -118,13 +118,13 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 		});
 	},
 	startDate: new Date(),
-	weekCurrent: getWeek(new Date()),
+	weekCurrent: getWeek(new Date(), { weekStartsOn: 1 }),
 	dateSelected: new Date(),
 	refreshGet: false,
 	setRefreshGet: () => set({ refreshGet: !get().refreshGet }),
 	setStartDate: (date: Date) => set({ startDate: date }),
 	fetchBooks: async () => {
-		const { dateFrom, dateTo } = dateFromTo(get().startDate);
+		const { dateFrom, dateTo, checkWeek } = dateFromTo(get().startDate);
 
 		const setIsLoading = get().setIsLoading;
 
@@ -138,6 +138,7 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 			set({
 				dateSelected: get().startDate,
 				listBooks: books,
+				weekCurrent: getWeek(checkWeek, { weekStartsOn: 1 }),
 			});
 		} catch (err) {
 			setIsLoading();
@@ -165,6 +166,7 @@ export const useReservationStore = create<ReservationState>((set, get) => ({
 	},
 	filterBooksByDate: (date: Date) => {
 		const { dateCurrent } = dateFromTo(date);
+
 		const listHoursAvailableCopy: Books[] = JSON.parse(
 			JSON.stringify(listHoursAvalable)
 		);

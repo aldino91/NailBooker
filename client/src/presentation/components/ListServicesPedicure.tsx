@@ -1,8 +1,9 @@
 import { servicesPedicure } from '../../utils/constants';
+import { Services } from './BodyEditBook';
 
 interface Props {
-	selectedServices: Array<{ [key: string]: string }>;
-	setSelectedServices: (arg: Array<{ [key: string]: string }>) => void;
+	selectedServices: Services[] | undefined;
+	setSelectedServices: (arg: Services[]) => void;
 }
 
 export default function ListServicesPedicure({
@@ -14,7 +15,11 @@ export default function ListServicesPedicure({
 		type: string;
 		duration: string;
 	}) => {
-		setSelectedServices([...selectedServices, data]);
+		if (selectedServices) {
+			setSelectedServices([...selectedServices, data]);
+		} else {
+			setSelectedServices([data]);
+		}
 	};
 	return (
 		<div className="w-full flex flex-wrap">
@@ -23,12 +28,12 @@ export default function ListServicesPedicure({
 					<button
 						key={i}
 						disabled={
-							selectedServices.find((data) => data === nailService)
+							selectedServices?.find((data) => data === nailService)
 								? true
 								: false
 						}
 						className={`cursor-pointer border-2 border-rose-200 rounded-3xl p-1 m-1 ${
-							selectedServices.find((data) => data === nailService)
+							selectedServices?.find((data) => data === nailService)
 								? 'bg-rose-400 text-white'
 								: 'bg-white text-black'
 						}`}

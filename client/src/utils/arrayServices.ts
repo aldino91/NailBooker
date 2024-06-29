@@ -1,14 +1,14 @@
-import { ListBook } from './interfaces';
+import { Services } from '../presentation/components/BodyEditBook';
 
-export const arrayServices = (
-	listServices: {
-		[key: string]: string;
-	}[]
-): Array<string> => {
-	const sumServices: string[] = [];
+export const arrayServices = (listServices: Services[] | undefined) => {
+	let sumServices: string[] = [];
 
-	for (let i = 0; i < listServices.length; i++) {
-		sumServices.push(listServices[i].services);
+	if (listServices) {
+		for (let i = 0; i < listServices.length; i++) {
+			sumServices.push(listServices[i].services);
+		}
+	} else {
+		sumServices = [''];
 	}
 
 	return sumServices;

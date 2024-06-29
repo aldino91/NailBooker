@@ -23,8 +23,8 @@ export default function AvailableHoursEdit({
 		listBookDays,
 		filterBooksByDate,
 		listBooks,
-		bookSelected,
 		updateListBookDays,
+		bookSelected,
 	} = useReservationStore();
 
 	const { notify } = useToast();
@@ -57,10 +57,9 @@ export default function AvailableHoursEdit({
 	useEffect(() => {
 		filterBooksByDate(dateSelected);
 	}, [dateSelected, listBooks]);
-
 	return (
-		<div className="w-full flex flex-row justify-center px-3">
-			<div className="w-full rounded-3xl box-shadow px-3 flex flex-col space-y-3 py-3">
+		<div className="w-full flex flex-row justify-center px-3 ">
+			<div className="w-full rounded-3xl box-shadow px-3 flex flex-col space-y-3 py-3 bg-default">
 				<div className="w-full flex flex-row space-x-3">
 					<div>
 						<text className=" font-semibold">Orari disponibili: </text>

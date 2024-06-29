@@ -6,7 +6,7 @@ export interface DataUpdate {
 	reservarName: string;
 	dayBook: number;
 	hourBook: string;
-	services: string[];
+	services: string[] | undefined;
 	duration: string;
 	id: string;
 }

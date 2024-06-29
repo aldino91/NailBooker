@@ -15,6 +15,7 @@ import ListServicesPedicure from './ListServicesPedicure';
 import useToast from '../../hook/HookToast';
 import { conditionChangeListDaysBooks } from '../../utils/conditionChangeListDaysBooks';
 import { fromStringToNum } from '../../utils/fromStringToNum';
+import { Services } from './BodyEditBook';
 
 interface Props {
 	showModal: boolean;
@@ -34,9 +35,7 @@ export default function ModalBook({
 
 	const [services, setServices] = useState<string>('Manicure');
 
-	const [selectedServices, setSelectedServices] = useState<
-		Array<{ [key: string]: string }>
-	>([]);
+	const [selectedServices, setSelectedServices] = useState<Services[]>();
 
 	const [formData, setFormData] = useState({
 		name: '',
@@ -116,10 +115,15 @@ export default function ModalBook({
 
 						<div className="flex flex-col lg:space-y-7 px-2 pt-2 order-2 h-4/6">
 							<SegmentService services={services} setServices={setServices} />
-							<ListServicesSelected
-								selectedServices={selectedServices}
-								setSelectedServices={setSelectedServices}
-							/>
+
+							{selectedServices ? (
+								<ListServicesSelected
+									selectedServices={selectedServices}
+									setSelectedServices={setSelectedServices}
+								/>
+							) : (
+								<div>Lista vuota...</div>
+							)}
 
 							<div className="font-base text-gray-500">
 								<text>Durata prenotazione: {sumHours(selectedServices)}</text>

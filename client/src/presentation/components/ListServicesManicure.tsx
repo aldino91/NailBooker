@@ -1,8 +1,9 @@
 import { servicesManicure } from '../../utils/constants';
+import { Services } from './BodyEditBook';
 
 interface Props {
-	selectedServices: Array<{ [key: string]: string }>;
-	setSelectedServices: (arg: Array<{ [key: string]: string }>) => void;
+	selectedServices: Services[] | undefined;
+	setSelectedServices: (arg: Services[]) => void;
 }
 
 export default function ListServicesManicure({
@@ -14,7 +15,11 @@ export default function ListServicesManicure({
 		type: string;
 		duration: string;
 	}) => {
-		setSelectedServices([...selectedServices, data]);
+		if (selectedServices) {
+			setSelectedServices([...selectedServices, data]);
+		} else {
+			setSelectedServices([data]);
+		}
 	};
 
 	return (
@@ -24,12 +29,12 @@ export default function ListServicesManicure({
 					<button
 						key={i}
 						disabled={
-							selectedServices.find((data) => data === nailService)
+							selectedServices?.find((data) => data === nailService)
 								? true
 								: false
 						}
 						className={`cursor-pointer border-2 border-indigo-200 rounded-3xl p-1 m-1 ${
-							selectedServices.find((data) => data === nailService)
+							selectedServices?.find((data) => data === nailService)
 								? 'bg-indigo-400 text-white'
 								: 'bg-white text-black'
 						}`}

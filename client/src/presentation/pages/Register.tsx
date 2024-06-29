@@ -5,11 +5,9 @@ import HeaderBar from '../components/HeaderBar';
 export default function Register(): JSX.Element {
 	return (
 		<BaseLayout>
-			<div className="flex flex-col items-center h-screen">
-				<HeaderBar title="Registrazione" />
+			<HeaderBar title="Registrazione" href="login" />
 
-				<FormRegister />
-			</div>
+			<FormRegister />
 		</BaseLayout>
 	);
 }
