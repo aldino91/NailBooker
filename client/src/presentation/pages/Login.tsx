@@ -5,11 +5,9 @@ import HeaderBar from '../components/HeaderBar';
 export default function Login(): JSX.Element {
 	return (
 		<BaseLayout>
-			<div className="flex flex-col items-center  h-screen">
-				<HeaderBar title="Login" />
+			<HeaderBar title="Login" />
 
-				<FormLogin />
-			</div>
+			<FormLogin />
 		</BaseLayout>
 	);
 }

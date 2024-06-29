@@ -1,6 +1,6 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import DashboardAdmin from './presentation/views/DashboardAdmin';
+import DashboardAdmin from './presentation/pages/DashboardAdmin';
 import { Home } from './presentation/pages/Home';
 import Booking from './presentation/pages/Booking';
 import Register from './presentation/pages/Register';
@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import { styleToast } from './utils/constants';
 import ForgotPassword from './presentation/pages/ForgotPassword';
 import ResetPassword from './presentation/pages/ResetPassword';
+import EditBook from './presentation/pages/EditBook';
 
 function App() {
 	return (
@@ -24,6 +25,7 @@ function App() {
 				<Route path="/calendar" element={<Calendar />} />
 				<Route path="/forgot-password" element={<ForgotPassword />} />
 				<Route path="/reset-password/:id" element={<ResetPassword />} />
+				<Route path="/edit-book" element={<EditBook />} />
 				<Route path="/dashboard-admin" element={<DashboardAdmin />} />
 			</Routes>
 			<ToastContainer

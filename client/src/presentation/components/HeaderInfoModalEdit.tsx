@@ -1,7 +1,8 @@
 import { fromUnixTime } from 'date-fns';
-import { useReservationStore } from '../../infrastructure/store/reservationsStore';
 import { formatDate } from '../../utils/formateDate';
 import IconCollapse from '../../components/IconCollapse';
+import { Books } from '../../domain/entities/Books';
+import LocalStorageHelper from '../../utils/localStorage';
 
 interface Props {
 	close: boolean;
@@ -12,7 +13,8 @@ export default function HeaderInfoModalEdit({
 	close,
 	setClose,
 }: Props): JSX.Element {
-	const { bookSelected } = useReservationStore();
+	const localStorage = new LocalStorageHelper<Books>();
+	const bookSelected = localStorage.load('bookSelected');
 
 	const dayDate = fromUnixTime(bookSelected?.dayBook as number);
 	const day = formatDate(dayDate.toISOString());

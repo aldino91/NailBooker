@@ -4,7 +4,10 @@ import { fromDateToTimeStamp } from '../../utils/fromDateToTimeStamp';
 import ModalBook from './ModalBook';
 import { useReservationStore } from '../../infrastructure/store/reservationsStore';
 import { dateFromTo } from '../../utils/dateFromTo';
-import ModalBookEdit from './ModalBookEdit';
+import { useNavigate } from 'react-router-dom';
+import { Services } from './BodyEditBook';
+import LocalStorageHelper from '../../utils/localStorage';
+import { searchServicesForEdit } from '../../utils/searchServicesForEdit';
 
 interface Props {
 	dateCurrent: Date;
@@ -15,18 +18,24 @@ export default function AvailableHoursAdmin({
 	dateCurrent,
 	dateSelected,
 }: Props): JSX.Element {
+	const navigate = useNavigate();
+
+	const localStorage = new LocalStorageHelper<Services[] | Books | undefined>();
+
 	const { listBookDays, filterBooksByDate, listBooks, setBookSelected } =
 		useReservationStore();
 
 	const { dayString } = fromDateToTimeStamp(dateCurrent);
 
 	const [showModalBook, setShowModalBook] = useState<boolean>(false);
-	const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
 
 	const handlerSelected = (book: Books) => {
 		if (book.status === 'occupato') {
 			setBookSelected(book);
-			setShowModalEdit(!showModalEdit);
+			localStorage.save('services', searchServicesForEdit(book.services!));
+			localStorage.save('bookSelected', book);
+			navigate('/edit-book');
+			// setShowModalEdit(!showModalEdit);
 		} else {
 			const { dateCurrent } = dateFromTo(dateSelected);
 			book.dayBook = dateCurrent;
@@ -41,7 +50,7 @@ export default function AvailableHoursAdmin({
 
 	return (
 		<div className="w-full flex flex-row justify-center px-3">
-			<div className="w-full rounded-3xl box-shadow px-3 flex flex-col space-y-3 py-3">
+			<div className="w-full rounded-3xl box-shadow px-3 flex flex-col space-y-3 py-3 bg-default">
 				<div className="w-full flex flex-row space-x-3">
 					<div>
 						<text className=" font-semibold">Orari disponibili: </text>
@@ -77,12 +86,7 @@ export default function AvailableHoursAdmin({
 				<ModalBook showModal={showModalBook} setShowModal={setShowModalBook} />
 			)}
 
-			{showModalEdit && (
-				<ModalBookEdit
-					showModal={showModalEdit}
-					setShowModal={setShowModalEdit}
-				/>
-			)}
+			{/* {showModalEdit && <ModalBookEdit />} */}
 		</div>
 	);
 }

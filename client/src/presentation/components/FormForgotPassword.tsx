@@ -46,7 +46,7 @@ export default function FormForgotPassword() {
 		}
 	};
 	return (
-		<div className="w-11/12 mt-20 rounded-3xl py-10 box-shadow border border-slate-100">
+		<div className="w-11/12 mt-20 rounded-3xl py-10 box-shadow bg-default">
 			<form
 				onSubmit={handleSubmit}
 				className="flex flex-col items-center space-y-4"

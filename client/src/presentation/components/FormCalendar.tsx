@@ -8,24 +8,23 @@ import { dateFromTo } from '../../utils/dateFromTo';
 
 registerLocale('it', it);
 
-interface Props {
-	weekCurrent: number;
-}
-
-export default function FormCalendar({ weekCurrent }: Props): JSX.Element {
-	const { filterBooksByDate, startDate, setStartDate } = useReservationStore();
+export default function FormCalendar(): JSX.Element {
+	const { filterBooksByDate, startDate, setStartDate, weekCurrent } =
+		useReservationStore();
 
 	const handlerDateSelected = (date: Date) => {
-		const checkDay = new Date(date);
+		const { dateCurrent, checkWeek } = dateFromTo(date);
 
-		const checkWeek = getWeek(checkDay);
+		const week = getWeek(checkWeek, { weekStartsOn: 1 });
 
-		const { dateCurrent } = dateFromTo(date);
+		console.log('weekCurrent => ', weekCurrent, 'checkWeek => ', week);
 
-		if (checkWeek !== weekCurrent) {
+		if (week !== weekCurrent) {
 			setStartDate(fromUnixTime(dateCurrent));
 			useReservationStore.setState({ dateSelected: date });
-			useReservationStore.setState({ weekCurrent: checkWeek });
+			useReservationStore.setState({
+				weekCurrent: week,
+			});
 		} else {
 			setStartDate(date);
 			useReservationStore.setState({ dateSelected: date });
@@ -44,6 +43,7 @@ export default function FormCalendar({ weekCurrent }: Props): JSX.Element {
 				locale="it"
 				selected={setDateStartCalendar(startDate as Date)}
 				onChange={(date) => handlerDateSelected(date as Date)}
+				// onSelect={(date) => handlerDateSelected(date as Date)}
 				minDate={new Date()}
 				filterDate={(date) => isWeekday(date)}
 				calendarStartDay={1}

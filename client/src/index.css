@@ -7,10 +7,11 @@
   font-family: "Kanit", sans-serif;
   font-weight: 300;
   font-style: normal;
-  /* background-color: #DFDBE5;
+  background-color: #D4D2CD
+    /* background-color: #DFDBE5;
   background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); */
 
-  /* color-scheme: light dark;
+    /* color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
@@ -19,6 +20,16 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; */
 }
+
+.bg-default {
+  background-color: #F1F0EC;
+  ;
+}
+
+.bg-layout {
+  background-color: #D4D2CD;
+}
+
 
 
 #background-photo {
@@ -32,7 +43,6 @@
   background-position: center;
 
   background-repeat: no-repeat;
-
 }
 
 
@@ -152,7 +162,7 @@
   width: 100%;
   border-radius: 16px !important;
   border: none !important;
-  background-color: white !important;
+  background-color: #F1F0EC !important;
   box-shadow: 0 0 4px 2px rgba(103, 103, 103, 0.3) !important;
   padding: 3px;
 }
@@ -167,7 +177,7 @@
   /* background-color: rgb(216 180 254) !important; */
   border-radius: 15px !important;
   border-bottom: none !important;
-  box-shadow: 0 0 4px 2px rgba(103, 103, 103, 0.3) !important;
+  /* box-shadow: 0 0 4px 2px rgba(103, 103, 103, 0.3) !important; */
 }
 
 .react-datepicker__day-names {
@@ -187,7 +197,7 @@
 .react-datepicker__day {
   /* width: 2rem !important; */
   /* padding: 0.5rem !important; */
-  color: rgb(223, 159, 239) !important;
+  color: rgb(88, 87, 87) !important;
   font-size: medium !important;
 }
 
@@ -234,6 +244,10 @@
 
 .box-shadow {
   box-shadow: 0 0 4px 2px rgba(103, 103, 103, 0.3) !important;
+}
+
+.shadow-header {
+  box-shadow: 0 4px 4px 0 rgba(103, 103, 103, 0.3) !important;
 }
 
 

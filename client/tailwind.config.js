@@ -13,7 +13,7 @@ export default {
           '100%': { transform: 'translateY(0px)', },
         },
         slideOutDown: {
-          '0%': { transform: 'translateY(0)' },
+          '0%': { transform: 'translateY(200px)' },
           '100%': { transform: 'translateY(100%)' },
         },
       },
