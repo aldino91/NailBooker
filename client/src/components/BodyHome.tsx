@@ -4,7 +4,7 @@ import { bgColorDefault } from '../utils/constants';
 export default function BodyHome(): JSX.Element {
 	const navigate = useNavigate();
 	return (
-		<div className="flex flex-col px-3 py-5 space-y-10 static mb-36">
+		<div className="flex flex-col px-3 py-5 overflow-scroll h-4/5">
 			<div className="w-full">
 				<h3 className="text-2xl font-bold text-gray-500">Featured services</h3>
 			</div>
@@ -12,7 +12,10 @@ export default function BodyHome(): JSX.Element {
 			{listService.map((service, index) => {
 				return (
 					<div className="flex flex-col space-y-2 px-2" key={index}>
-						<div id={service} className="w-full h-44 rounded-3xl"></div>
+						<div
+							id={service}
+							className="w-full h-44 rounded-3xl box-shadow"
+						></div>
 
 						<div className="">
 							<text className="font-semibold capitalize text-gray-500">
@@ -48,12 +51,12 @@ export default function BodyHome(): JSX.Element {
 			</div>
 
 			<div
-				className="w-14 h-14 rounded-full  bg-green-500 opacity-70 fixed bottom-10 right-5 flex flex-row justify-center items-center cursor-pointer"
+				className="w-14 h-14 rounded-full  bg-stone-400 opacity-70 fixed bottom-10 right-5 flex flex-row justify-center items-center cursor-pointer"
 				// onClick={() => {
 				// 	navigate('https://wa.me/34644102488');
 				// }}
 			>
-				<a href="https://wa.me/393200313778">
+				{/* <a href="https://wa.me/393200313778">
 					<div>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +72,23 @@ export default function BodyHome(): JSX.Element {
 							></path>
 						</svg>
 					</div>
-				</a>
+				</a> */}
+				<div
+					className=""
+					onClick={() => {
+						navigate('/login');
+					}}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						// style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"
+					>
+						<path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3zm9 11v-1a7 7 0 0 0-7-7h-4a7 7 0 0 0-7 7v1h2v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1z"></path>
+					</svg>
+				</div>
 			</div>
 		</div>
 	);

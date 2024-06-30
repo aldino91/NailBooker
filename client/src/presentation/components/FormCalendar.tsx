@@ -17,8 +17,6 @@ export default function FormCalendar(): JSX.Element {
 
 		const week = getWeek(checkWeek, { weekStartsOn: 1 });
 
-		console.log('weekCurrent => ', weekCurrent, 'checkWeek => ', week);
-
 		if (week !== weekCurrent) {
 			setStartDate(fromUnixTime(dateCurrent));
 			useReservationStore.setState({ dateSelected: date });

@@ -18,7 +18,7 @@ export default function DashboardAdmin(): JSX.Element {
 	return (
 		<BaseLayout>
 			<HeaderBar title="Dashboard Admin" href="" />
-			<div className="flex flex-col space-y-5 mb-6">
+			<div className="flex flex-col space-y-5 overflow-scroll h-5/6 py-10">
 				<FormCalendar />
 
 				{isLoading ? (

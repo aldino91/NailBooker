@@ -6,6 +6,8 @@ interface Props {
 
 export default function BaseLayout({ children }: Props): JSX.Element {
 	return (
-		<div className="w-full lg:w-1/2 mx-auto static bg-layout">{children}</div>
+		<div className="w-full lg:w-1/2 mx-auto static bg-layout h-screen">
+			{children}
+		</div>
 	);
 }

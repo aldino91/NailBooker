@@ -1,4 +1,4 @@
-export const bgColorDefault = 'bg-purple-400';
+export const bgColorDefault = 'bg-red-400';
 export const bgColorDisable = 'bg-purple-300';
 
 export const books = {

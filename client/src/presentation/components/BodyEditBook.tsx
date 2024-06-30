@@ -143,10 +143,10 @@ export default function BodyEditBook(): JSX.Element {
 	}, [weekCurrent]);
 
 	return (
-		<div className="my-6">
-			<div className="w-full mx-auto h-full flex flex-col justify-center">
+		<div className="h-5/6 overflow-scroll mt-5">
+			<div className="w-full mx-auto flex flex-col h-full">
 				<div
-					className={`rounded-lg box-shadow relative flex flex-col justify-between space-y-4 w-full bg-default outline-none focus:outline-none border-blueGray-200 h-full overflow-y-scroll expandable ${
+					className={`relative flex flex-col justify-between space-y-4 w-full bg-default outline-none focus:outline-none  expandable ${
 						showEditBook ? 'expanded' : ''
 					} `}
 				>

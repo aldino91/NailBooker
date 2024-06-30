@@ -9,7 +9,7 @@ export default function HeaderBar({ href, title }: Props): JSX.Element {
 	const navigate = useNavigate();
 	return (
 		<div
-			className={`w-full h-20 bg-default flex flex-row items-center shadow-header mb-8`}
+			className={`w-full h-1/6 bg-red-300 flex flex-row items-center shadow-header`}
 		>
 			<div
 				className="w-1/12 cursor-pointer"
@@ -28,7 +28,7 @@ export default function HeaderBar({ href, title }: Props): JSX.Element {
 				</svg>
 			</div>
 			<div className="w-10/12 text-center">
-				<h1 className="text-black font-base text-3xl">{title}</h1>
+				<h1 className="text-white font-base text-3xl">{title}</h1>
 			</div>
 		</div>
 	);
