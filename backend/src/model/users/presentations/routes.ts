@@ -35,7 +35,7 @@ export class AuthRoutes {
 
 		router.get('/auth/validate-email/:token', controller.validateEmail);
 
-		router.delete('/auth', async (res: Response) => {
+		router.delete('/auth', async (req: Request, res: Response) => {
 			await prisma.users.deleteMany();
 
 			res.status(200).json('Delete all users!');
