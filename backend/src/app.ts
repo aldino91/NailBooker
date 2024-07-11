@@ -7,7 +7,7 @@ import { AppRoutes } from './server/routes';
 })();
 
 async function main() {
-	const server = new Server(envs.PORT, AppRoutes.routes);
+	const server = new Server(envs.PORT || 3000, AppRoutes.routes);
 
 	server.start();
 }
