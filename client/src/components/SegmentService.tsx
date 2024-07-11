@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface Props {
 	services: string;
 	setServices: (service: string) => void;

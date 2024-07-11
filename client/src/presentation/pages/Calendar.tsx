@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { fecthAuthorized } from '../../api/fetchAuthorized';
 import BaseLayout from '../components/BaseLayout';
 import HeaderBar from '../components/HeaderBar';
-import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 
 export default function Calendar(): JSX.Element {
-	const [startDate, setStartDate] = useState<Date | string>(new Date());
-	const [bookSelected, setBookSelected] = useState(true);
+	// const [startDate, setStartDate] = useState<Date | string>(new Date());
+	// const [bookSelected, setBookSelected] = useState(true);
 
 	useEffect(() => {
 		fecthAuthorized('register')
@@ -29,11 +28,11 @@ export default function Calendar(): JSX.Element {
 				/> */}
 				<div className="w-full flex flex-row justify-center px-3">
 					<button
-						className={`w-full p-2 rounded-3xl ${
-							bookSelected ? bgColorDisable : bgColorDefault
-						}  text-white box-shadow`}
-						// onClick={() => filterAvalableHours()}
-						disabled={bookSelected}
+					// className={`w-full p-2 rounded-3xl ${
+					// 	bookSelected ? bgColorDisable : bgColorDefault
+					// }  text-white box-shadow`}
+					// // onClick={() => filterAvalableHours()}
+					// disabled={bookSelected}
 					>
 						Conferma
 					</button>

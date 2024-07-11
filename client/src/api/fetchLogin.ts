@@ -2,7 +2,12 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
-export const fetchLogin = async (data: any) => {
+interface DataLogin {
+	email: string;
+	password: string;
+}
+
+export const fetchLogin = async (data: DataLogin) => {
 	try {
 		const response = await axios.post(
 			`${import.meta.env.VITE_API_URL}/auth/login`,
@@ -15,6 +20,6 @@ export const fetchLogin = async (data: any) => {
 		);
 		return response;
 	} catch (error) {
-		return { data: 'user not found, make sure you are registered' };
+		return { data: 'Network error, please try again later.' };
 	}
 };
