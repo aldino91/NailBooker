@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { UserDataSourcesPostgresImpl } from '../Infrastructure/datasources/datasources.postgres';
 import { UserRepositoryImpl } from '../Infrastructure/repository/repository.impl';
 import { AuthController } from './Auth/auth.controller';
@@ -35,7 +35,7 @@ export class AuthRoutes {
 
 		router.get('/auth/validate-email/:token', controller.validateEmail);
 
-		router.delete('/auth', async (req, res) => {
+		router.delete('/auth', async (res: Response) => {
 			await prisma.users.deleteMany();
 
 			res.status(200).json('Delete all users!');

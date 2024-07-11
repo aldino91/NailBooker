@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { RepositoryBooks } from '../domain/repository.books';
 import { CreatedDto } from '../domain/dtos/books/dtos.created.book';
 import { UseCaseCreatedBook } from '../domain/use.cases/created.use.case';
-import prisma from '../../../postgres';
+// import prisma from '../../../postgres';
 import { UseCaseGetByIdBook } from '../domain/use.cases/getById.use.case';
 import { UseCaseGetAllBooks } from '../domain/use.cases/getAllBooks.use.case';
 import { UseCaseDeleteById } from '../domain/use.cases/deleteById.use.case';
