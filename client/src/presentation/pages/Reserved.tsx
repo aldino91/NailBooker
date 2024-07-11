@@ -7,7 +7,6 @@ import LocalStorageHelper from '../../utils/localStorage';
 import BaseLayout from '../components/BaseLayout';
 import HeaderBar from '../components/HeaderBar';
 import SegmentService from '../../components/SegmentService';
-import { handlerDeleted } from '../../utils/handlerDeletedServices';
 import { sumHours } from '../../utils/sumHours';
 import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 import BaseAuthorized from '../components/BaseAuthorized';
@@ -59,13 +58,7 @@ export default function Reserved(): JSX.Element {
 												? 'bg-indigo-400 text-white'
 												: 'bg-rose-400 text-white'
 										} text-white rounded-3xl p-2 m-1 text-center cursor-pointer`}
-										onClick={() =>
-											handlerDeleted({
-												data: service,
-												selectedServices,
-												setSelectedServices,
-											})
-										}
+										onClick={() => console.log('delete')}
 									>
 										{service.services}
 									</div>

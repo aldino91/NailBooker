@@ -1,6 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
-import axios from 'axios';
 import { DataRegister, fetchRegister } from './fetchRegister';
 
 describe('Test fetch register - integracion', () => {
