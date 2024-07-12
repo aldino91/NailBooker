@@ -11,7 +11,7 @@ export class AppRoutes {
 		router.use('/api', BooksRoutes.routes);
 
 		router.use('/test', (req: Request, res: Response) => {
-			res.status(200).json({ message: 'test funziona' });
+			res.send({ message: 'test funziona' });
 		});
 
 		return router;
