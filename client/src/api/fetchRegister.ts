@@ -15,8 +15,8 @@ export interface DataRegister {
 export const fetchRegister = async (data: DataRegister) => {
 	try {
 		const response = await axios.post(
-			// `${import.meta.env.VITE_API_URL}/auth/register`,
-			`https://nail-booker-rxhz.vercel.app/api/auth/register`,
+			`${import.meta.env.VITE_API_URL}/auth/register`,
+			// `https://nail-booker-rxhz.vercel.app/api/auth/register`,
 			data
 		);
 
