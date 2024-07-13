@@ -39,6 +39,7 @@ export default function FormLogin(): JSX.Element {
 			setShowLoading(true);
 
 			const resp = await fetchLogin(formData);
+			console.log('Risposta de la chiamata => ', resp);
 
 			if (resp.data.error) {
 				notify(resp.data.error, 'warn');
@@ -59,7 +60,7 @@ export default function FormLogin(): JSX.Element {
 			setShowLoading(false);
 		} catch (error) {
 			console.log('Error Login =>', error);
-			notify('Error al logearse, intetelo mas tarde...', 'warn');
+			notify('Error al logearse, intetelo mas tarde...', 'error');
 			setShowLoading(false);
 		}
 	};
