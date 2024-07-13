@@ -1,4 +1,4 @@
-import { Response, Request, Router } from 'express';
+import { Router } from 'express';
 import { AuthRoutes } from '../model/users/presentations/routes';
 import { BooksRoutes } from '../model/books/presentations/routes';
 
@@ -9,10 +9,6 @@ export class AppRoutes {
 		router.use('/api', AuthRoutes.routes);
 
 		router.use('/api', BooksRoutes.routes);
-
-		router.use('/test', (req: Request, res: Response) => {
-			res.send({ message: 'test funziona' });
-		});
 
 		return router;
 	}

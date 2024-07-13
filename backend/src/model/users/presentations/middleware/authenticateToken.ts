@@ -8,20 +8,22 @@ const authenticateToken = async (
 ) => {
 	const token = req.cookies.auth_token;
 
-	if (!token) {
-		return res.status(401).send({ error: 'Unauthorized' });
+	if (!token || token === undefined) {
+		return res.status(200).json({ error: 'Unauthorized' });
 	}
 
 	try {
 		const userValidate = await JwtAdapter.validateToken(token);
 
-		if (!userValidate) return res.status(401).send({ error: 'Unauthorized' });
+		if (!userValidate) return res.status(200).json({ error: 'Unauthorized' });
 
 		req.body = userValidate;
 
 		next();
 	} catch (error) {
-		res.status(500).json('Error Token Authorization');
+		// res.status(500).json('Error internal server Token Authorization...');
+
+		return res.json({ error: 'Error internal server Token Authorization...' });
 	}
 };
 
