@@ -5,8 +5,10 @@ import { bgColorDefault, bgColorDisable } from '../../utils/constants';
 import LoadingSpinner from './LoadingSpinner';
 import InputCustom from './InputCustom';
 import useToast from '../../hook/HookToast';
+import LocalStorageHelper from '../../utils/localStorage';
 
 export default function FormLogin(): JSX.Element {
+	const localStorage = new LocalStorageHelper();
 	const navigate = useNavigate();
 
 	const { notify } = useToast();
@@ -39,11 +41,11 @@ export default function FormLogin(): JSX.Element {
 			setShowLoading(true);
 
 			const resp = await fetchLogin(formData);
-			console.log('Risposta de la chiamata => ', resp);
 
 			if (resp.data.error) {
 				notify(resp.data.error, 'warn');
 			} else {
+				localStorage.save('userId', resp.data.user.id);
 				if (
 					resp?.data?.user.role === 'admin' &&
 					resp.data.message === 'Login successful'
