@@ -59,6 +59,7 @@ export default function FormLogin(): JSX.Element {
 			setShowLoading(false);
 		} catch (error) {
 			console.log('Error Login =>', error);
+			notify('Error al logearse, intetelo mas tarde...', 'warn');
 			setShowLoading(false);
 		}
 	};
