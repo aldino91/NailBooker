@@ -33,8 +33,9 @@ export default class RepositoryBooksImpl implements RepositoryBooks {
 
 	async rangeDateBooks(
 		dateFrom: number,
-		dateTo: number
+		dateTo: number,
+		id: string
 	): Promise<{ err?: ErrorBookingBase; data?: Books[] }> {
-		return await this.datasources.rangeDateBooks(dateFrom, dateTo);
+		return await this.datasources.rangeDateBooks(dateFrom, dateTo, id);
 	}
 }

@@ -26,6 +26,7 @@ export abstract class RepositoryBooks {
 
 	abstract rangeDateBooks(
 		dateFrom: number,
-		dateTo: number
+		dateTo: number,
+		id: string
 	): Promise<{ err?: ErrorBookingBase; data?: Books[] }>;
 }

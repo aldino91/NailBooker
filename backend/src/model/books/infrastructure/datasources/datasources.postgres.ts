@@ -184,11 +184,13 @@ export class DatasourcesBooksPostegresImpl implements DataSourcesBooks {
 
 	async rangeDateBooks(
 		dateFrom: number,
-		dateTo: number
+		dateTo: number,
+		id: string
 	): Promise<{ err?: ErrorBookingBase; data?: Books[] }> {
 		try {
 			const listBooks = await prisma.bookings.findMany({
 				where: {
+					usersId: id,
 					AND: [{ dayBook: { gte: dateFrom } }, { dayBook: { lte: dateTo } }],
 				},
 			});

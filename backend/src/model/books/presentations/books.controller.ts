@@ -72,12 +72,14 @@ export class BooksController {
 	rangeDateBooks = async (req: Request, res: Response) => {
 		const data = req.query;
 
+		const id = String(data.id);
+
 		const dateFrom = Number(data.dateFrom);
 
 		const dateTo = Number(data.dateTo);
 
 		new UseRangeDateBooks(this.booksRepository)
-			.execute(dateFrom, dateTo)
+			.execute(dateFrom, dateTo, id)
 			.then((resp) => {
 				return res.status(200).json(resp.data);
 			})
