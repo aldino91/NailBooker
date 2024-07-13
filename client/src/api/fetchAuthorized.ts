@@ -4,9 +4,8 @@ axios.defaults.withCredentials = true;
 
 export const fecthAuthorized = async (isNotAuth: string = '') => {
 	try {
-		const response = await axios.get(
-			`${import.meta.env.VITE_API_URL}/auth/protected-route`
-		);
+		const apiUrl = import.meta.env.VITE_API_URL;
+		const response = await axios.get(`${apiUrl}/auth/protected-route`);
 
 		return response;
 	} catch (error) {

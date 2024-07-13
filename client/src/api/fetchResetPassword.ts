@@ -7,10 +7,8 @@ export interface DataResetPassword {
 
 export const fetchResetPassword = async (data: DataResetPassword) => {
 	try {
-		const response = await axios.put(
-			`${import.meta.env.VITE_API_URL}/auth/reset-password`,
-			data
-		);
+		const apiUrl = import.meta.env.VITE_API_URL;
+		const response = await axios.put(`${apiUrl}/auth/reset-password`, data);
 		return response.data;
 	} catch (error) {
 		console.log(error);

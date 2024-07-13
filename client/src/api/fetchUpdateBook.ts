@@ -13,10 +13,8 @@ export interface DataUpdate {
 
 export const fetchUpdateBook = async (data: DataUpdate) => {
 	try {
-		const response = await axios.put(
-			`${import.meta.env.VITE_API_URL}/book-update`,
-			data
-		);
+		const apiUrl = import.meta.env.VITE_API_URL;
+		const response = await axios.put(`${apiUrl}/book-update`, data);
 		return response;
 	} catch (error) {
 		console.log(error);
