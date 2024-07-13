@@ -1,6 +1,4 @@
-import { ReactNode, useEffect } from 'react';
-import LocalStorageHelper from '../../utils/localStorage';
-import { useNavigate } from 'react-router-dom';
+import { ReactNode } from 'react';
 
 interface Props {
 	children: ReactNode;
