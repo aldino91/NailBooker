@@ -16,6 +16,7 @@ export const fetchLogin = async (data: DataLogin) => {
 		const response = await axios.post(`${apiUrl}/auth/login`, data, {
 			headers: {
 				'Content-Type': 'application/json',
+				withCredentials: true,
 			},
 		});
 
