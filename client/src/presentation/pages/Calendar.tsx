@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { fecthAuthorized } from '../../api/fetchAuthorized';
+import { fetchAuthorized } from '../../api/fetchAuthorized';
 import BaseLayout from '../components/BaseLayout';
 import HeaderBar from '../components/HeaderBar';
 
@@ -8,7 +8,7 @@ export default function Calendar(): JSX.Element {
 	// const [bookSelected, setBookSelected] = useState(true);
 
 	useEffect(() => {
-		fecthAuthorized('register')
+		fetchAuthorized('register')
 			.then((resp) => {
 				console.log(resp?.data);
 				return resp?.data;

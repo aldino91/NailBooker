@@ -1,8 +1,38 @@
 import { useNavigate } from 'react-router-dom';
 import { bgColorDefault } from '../utils/constants';
+import LocalStorageHelper from '../utils/localStorage';
+import { fetchAuthorized } from '../api/fetchAuthorized';
+import useToast from '../hook/HookToast';
 
 export default function BodyHome(): JSX.Element {
+	const localStorageId = new LocalStorageHelper<string>();
+
+	const { notify } = useToast();
+
 	const navigate = useNavigate();
+
+	const checkAuthorization = async () => {
+		try {
+			const resp = await fetchAuthorized('login');
+
+			const error = resp.data.error;
+			if (error) {
+				notify(
+					'Prima di fare una prenotazione devi registrarti, grazie...',
+					'warn'
+				);
+			} else if (resp?.data?.user.role === 'admin') {
+				localStorageId.save('userId', resp?.data?.user.id);
+				navigate('/dashboard-admin');
+			} else {
+				navigate('/reserved');
+			}
+		} catch (err) {
+			console.log('Authorization error:', err);
+			notify('Error internat server', 'error');
+		}
+	};
+
 	return (
 		<div className="flex flex-col px-3 py-5 overflow-scroll h-4/5">
 			<div className="w-full">
@@ -28,9 +58,7 @@ export default function BodyHome(): JSX.Element {
 
 			<div
 				className={`w-14 h-14 rounded-full  ${bgColorDefault}  opacity-70  fixed bottom-10 left-5 flex flex-row justify-center items-center cursor-pointer`}
-				onClick={() => {
-					navigate('/reserved');
-				}}
+				onClick={checkAuthorization}
 			>
 				<div>
 					<svg
