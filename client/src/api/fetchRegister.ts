@@ -15,7 +15,12 @@ export interface DataRegister {
 export const fetchRegister = async (data: DataRegister) => {
 	try {
 		const apiUrl = import.meta.env.VITE_API_URL;
-		const response = await axios.post(`${apiUrl}/auth/register`, data);
+		const response = await axios.post(`${apiUrl}/auth/register`, data, {
+			headers: {
+				'Content-Type': 'application/json',
+				withCredentials: true,
+			},
+		});
 
 		console.log('Response register  => ', response.data);
 		return response.data;

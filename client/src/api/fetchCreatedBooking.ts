@@ -14,7 +14,12 @@ export interface DataCreatedBook {
 export const fetchCreatedBookings = async (data: DataCreatedBook) => {
 	try {
 		const apiUrl = import.meta.env.VITE_API_URL;
-		const response = await axios.post(`${apiUrl}/books-created`, data);
+		const response = await axios.post(`${apiUrl}/books-created`, data, {
+			headers: {
+				'Content-Type': 'application/json',
+				withCredentials: true,
+			},
+		});
 		return response;
 	} catch (error) {
 		console.log(error);
