@@ -14,7 +14,11 @@ export class Server {
 	}
 
 	async start() {
-		this.app.use(cors());
+		const corsOptions = {
+			origin: 'https://nail-booker.vercel.app',
+			credentials: true,
+		};
+		this.app.use(cors(corsOptions));
 
 		this.app.use(cookieParser());
 
